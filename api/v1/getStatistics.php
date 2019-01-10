@@ -1,6 +1,11 @@
 <?php
+namespace API\V1;
 
 echo json_encode([
-    "test0" => "ok0",
-    "test1" => "ok1"
+    "test0" => [
+        "ok0" => "k"
+    ],
+    "test1" => [
+        "ok1" => "q"
+    ]
 ]);
