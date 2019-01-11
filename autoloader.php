@@ -11,7 +11,6 @@ class Autoloader {
         });
     }
 
-
     private static function getClassPath(string $className) : string {
         $explodedClass = explode(DIRECTORY_SEPARATOR, str_replace("\\", DIRECTORY_SEPARATOR, $className));
 
