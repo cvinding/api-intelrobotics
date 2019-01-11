@@ -24,3 +24,4 @@ $endpoint = new \CONTROLLER\EndpointController();
 $endpoint->getEndpoint($_GET['endpoint']);
 //echo json_encode(['test' => ['lol']]);
 
+//te
