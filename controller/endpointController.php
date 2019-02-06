@@ -24,8 +24,8 @@ class EndpointController {
 
             die(json_encode(["message" => "Endpoint does not exist!"]));
         }
-        var_dump($request);
-var_dump(strpos($endpoint, '?'));
+      //  var_dump($request);
+//var_dump(strpos($endpoint, '?'));
 
         if(strpos($endpoint, '?') !== false){
             die( "get GOT!");
