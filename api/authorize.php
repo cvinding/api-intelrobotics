@@ -7,6 +7,6 @@ namespace API;
 
 echo json_encode([
     "message" => "You are now authorized to use the API",
-    "status" => "Success",
+    "status" => true,
     "token" => "AD87SJ2K121AD23RRPOOL"
 ]);

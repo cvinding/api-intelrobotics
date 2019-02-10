@@ -5,7 +5,7 @@ namespace CONTROLLER;
  * Class Controller
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
- * This Controller class is used for inheritance. This Controller is the parent of all other controllers, except the EndpointController.
+ * This Controller class is used for inheritance. This Controller is the parent of all other controllers.
  * The class set the controllers model so it is easier to create a new instance of.
  */
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {

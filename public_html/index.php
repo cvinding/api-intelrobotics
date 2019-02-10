@@ -21,8 +21,7 @@ $test = new \CONTROLLER\AuthorizeController();
 //echo $test->getModel();
 
 
-
-//$endpoint = new \CONTROLLER\EndpointController();
-//$endpoint->getEndpoint($_GET['endpoint']);
+$endpoint = new \CONTROLLER\EndpointController();
+$endpoint->getEndpoint($_GET['endpoint']);
 
 
