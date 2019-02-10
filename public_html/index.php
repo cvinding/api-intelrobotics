@@ -16,11 +16,13 @@ header('Content-Type: application/json');
 
 //echo "<br>";
 
+$test = new \CONTROLLER\AuthorizeController();
 
-$endpoint = new \CONTROLLER\EndpointController();
+//echo $test->getModel();
 
 
-//echo add(2,3);
-$endpoint->getEndpoint($_GET['endpoint']);
-//echo json_encode(['test' => ['lol']]);
+
+//$endpoint = new \CONTROLLER\EndpointController();
+//$endpoint->getEndpoint($_GET['endpoint']);
+
 
