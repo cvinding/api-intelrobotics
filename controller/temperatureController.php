@@ -1,7 +1,11 @@
 <?php
 namespace CONTROLLER;
 
-
+/**
+ * Class TemperatureController
+ * @package CONTROLLER
+ * @author Christian Vinding Rasmussen
+ */
 class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
     /**
@@ -17,12 +21,13 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
 
     public function endpoint(string $endpoint) : bool {
 
-        var_dump($endpoint);
-
         return true;
     }
 
 
+    public function addTemperature() {
+
+    }
 
 
 }

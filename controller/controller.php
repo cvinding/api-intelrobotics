@@ -12,6 +12,10 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
     protected $endpoints;
 
+    /**
+     * Controller constructor.
+     * @param array $endpoints
+     */
     public function __construct(array $endpoints = []){
         $this->endpoints = $endpoints;
     }
@@ -52,6 +56,10 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         return (!empty($parameters)) ? $class->newInstanceArgs($parameters) : $class->newInstance();
     }
 
+    /**
+     * Get all valid endpoints
+     * @return array
+     */
     protected function getEndpoints() : array {
         return $this->endpoints;
     }

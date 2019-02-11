@@ -16,7 +16,7 @@ header('Content-Type: application/json');
 
 //echo "<br>";
 
-$test = new \CONTROLLER\AuthorizeController();
+//$test = new \CONTROLLER\AuthorizeController();
 
 //echo $test->getModel();
 
