@@ -1,5 +1,5 @@
 <?php
-namespace API;
+namespace API\AUTH;
 
 
 //TODO: create authorize file

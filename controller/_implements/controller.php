@@ -11,4 +11,6 @@ interface Controller {
 
     //TODO: start this interface
 
+    public function __construct();
+
 }
