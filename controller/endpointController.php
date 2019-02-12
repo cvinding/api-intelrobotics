@@ -5,110 +5,124 @@ namespace CONTROLLER;
  * Class EndpointController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
+ * //TODO: Description
  */
 class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
+
+    /**
+     * $responseTypes stores all the different kind of error responses for getting an endpoint
+     * @var array
+     */
+    private $responseTypes;
 
     /**
      * EndpointController constructor.
      */
     public function __construct() {
         parent::__construct();
+
+        // Set response types
+        $this->responseTypes = [
+            400 => ["message" => "Error 400: Invalid request", "status" => false],
+            404 => ["message" => "Error 404: Endpoint not found", "status" => false]
+        ];
     }
 
     /**
-     * Used for getting the endpoint
+     * getEndpoint() is used for getting the endpoint
      * @param string $request
      */
     public function getEndpoint(string $request) {
 
         // Check if the $request variable is empty
         if(strlen($request) <= 0){
-            http_response_code(400);
-
-            exit(json_encode(["message" => "Invalid request. Requested endpoint is not specified"]));
+            $this->exitResponse(400, "Endpoint not specified");
         }
 
         $rawRequest = explode("/", $request);
 
-        // Check if the $rawRequest is at least 2 parts long.
-        // 1. part is 'api'
-        // 2. part is the controllers name
-        /*if(sizeof($rawRequest) < 2) {
-            http_response_code(400);
-
-            exit(json_encode(["message" => "Invalid request. Requested endpoint is missing configuration"]));
-        }*/
-
         // Check if the 1. part of the request is 'api'
         if($rawRequest[0] !== "api" || !isset($rawRequest[1])){
-            http_response_code(400);
-            //TODO: fix fejl besked
-            exit(json_encode(["message" => "Invalid request. "]));
+            $this->exitResponse(400, "Endpoint not specified");
         }
 
         // Name of the controller/endpoint
         $controllerName = $rawRequest[1];
 
         // Which method we have to call
-        $action = (isset($rawRequest[2])) ? $rawRequest[2] : "index";
+        $action = (isset($rawRequest[2]) && strlen($rawRequest[2]) > 0) ? $rawRequest[2] : "index";
 
-        // All the GET parameters
-        $parameters = [];
+        // All the GET and POST parameters
+        $parameters = $this->getParameters($rawRequest, isset($rawRequest[3]));
 
-        if(isset($rawRequest[3])) {
-            for($i = 3; $i < sizeof($rawRequest); $i++) {
-                array_push($parameters, $rawRequest[$i]);
-            }
+        // Get the controller
+        $controller = $this->getController($controllerName);
+
+        // Check if the method exists and how many parameters the method takes if any
+        $args = $this->methodParameters($controller, $action);
+
+        // If the parameters send does not match the number it takes send an exitCode
+        if(sizeof($parameters) !== sizeof($args)){
+            $this->exitResponse(400, "Missing request arguments");
         }
 
+        // Call the endpoint
+        call_user_func_array([$controller, $action], $parameters);
 
-/*
-        // Create the path to the endpoint folder
-        $controllerPath = "../";
-
-        $loop = ((sizeof($rawRequest) - 1) === 2) ? sizeof($rawRequest) - 1 : sizeof($rawRequest);
-
-        for($i = 0; $i < $loop; $i++) {
-            $controllerPath .= $rawRequest[$i]."/";
-        }
-
-        var_dump($controllerPath);
-
-        // file_exists() for finding directories only works on UNIX systems, because a folder is just a file unlike Windows
-        if (!file_exists($controllerPath) && !is_dir($controllerPath)){
-            http_response_code(404);
-
-            exit(json_encode(["message" => "Endpoint does not exist"]));
-        }
-
-        $endpoint = "{$controllerPath}index.php";
-*/
-
-
-
+        // Send a 200 HTTP response
         http_response_code(200);
-
-        // Set the endpoint controller if it exists
-        try {
-            $controller = $this->getController($controllerName, $action);
-            //$controller->start();
-
-        } catch (\Exception $exception) {
-            exit($exception);
-        }
-
-        //require $endpoint;
 
     }
 
     /**
-     * Used for automatically setting a Controller for a endpoint
-     * @param string $name
-     * @param string $method
-     * @return object|\CONTROLLER\Controller
-     * @throws \Exception \ReflectionException
+     * getParameters() checks if the REQUEST_METHOD is GET or POST.
+     * Then checks if it has been supplied with GET parameters.
+     * If there is no GET parameters, assume there is raw JSON data send with a POST request
+     * If there is no raw JSON data, return $_POST
+     * @param array $request
+     * @param bool $isGET
+     * @return array
      */
-    private function getController(string $name, string $method) {
+    private function getParameters(array $request = [], bool $isGET = false) : array {
+        $validRequestMethods = ["GET", "POST"];
+
+        if(array_search($_SERVER["REQUEST_METHOD"], $validRequestMethods) === false){
+            $this->exitResponse(400, "Illegal request method, only GET or POST is allowed");
+        }
+
+        // Check if REQUEST_METHOD is GET and if there is supplied GET parameters
+        if($_SERVER["REQUEST_METHOD"] === "GET" && $isGET){
+
+            $parameters = [];
+
+            for($i = 3; $i < sizeof($request); $i++) {
+                array_push($parameters, $request[$i]);
+            }
+
+            return $parameters;
+        }
+
+        // Get raw JSON data
+        $data = file_get_contents("php://input");
+
+        // Decode JSON data
+        $decoded = json_decode($data, true);
+
+        // Check if data was valid JSON
+        if(json_last_error() === JSON_ERROR_NONE){
+            return $decoded;
+        }
+
+        // Return $_POST if raw JSON data is invalid
+        return $_POST;
+    }
+
+    /**
+     * getController() is used for setting the requested endpoint
+     * @param string $name
+     * @return \CONTROLLER\Controller
+     */
+    private function getController(string $name) : \CONTROLLER\Controller {
         $bannedControllers = ["CONTROLLER\\Controller","CONTROLLER\\EndpointController"];
 
         // Create the Controller from the $endpoint array
@@ -116,29 +130,63 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
 
         // Check if the Controller is banned
         if(array_search($controller,$bannedControllers) !== false) {
-            Throw new \Exception("This endpoint is setup with a banned controller. {$controller} can not be used for controlling the endpoints");
+            $this->exitResponse(404);
         }
 
         // Check if the $controller exists
         if(!class_exists($controller)) {
-            Throw new \Exception("{$controller} cannot be called because it does not exist");
-        }
-
-        // Use the ReflectionClass to check and instance the Controller
-        $class = new \ReflectionClass($controller);
-
-        // Check if the called class is deprived from the CONTROLLER\Controller class
-        if(!isset($class->getParentClass()->name) && $class->getParentClass()->name !== "CONTROLLER\\Controller") {
-            Throw new \Exception("{$controller} class is not a deprived class of CONTROLLER\\Controller");
-        }
-
-        // Check if the called class has a specified method
-        if(!$class->getMethod($method)) {
-            Throw new \Exception("{$controller} does not have a method called '{$method}'");
+            $this->exitResponse(404);
         }
 
         // Return the Controller instance
-        return $class->newInstance();
+        return new $controller();
+    }
+
+    /**
+     * methodParameters() checks if the method exists and how many parameters it takes if any
+     * @param \CONTROLLER\Controller $controller
+     * @param string $method
+     * @return \ReflectionParameter[]
+     */
+    private function methodParameters(\CONTROLLER\Controller $controller, string $method) : array {
+        try {
+            $method = new \ReflectionMethod($controller, $method);
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(404);
+        }
+
+        // Return the parameters
+        return $method->getParameters();
+    }
+
+    /**
+     * exitResponse() is used for sending a HTTP response code and exiting with a JSON message
+     * @param int $code
+     * @param string $message
+     */
+    private function exitResponse(int $code, string $message = "") {
+
+        // Check if the $code is valid in our array
+        if(array_key_exists($code, $this->responseTypes) !== false) {
+
+            // Set HTTP response code
+            http_response_code($code);
+
+            // Exit with a JSON message
+            if($message !== ""){
+                exit(json_encode(["message" => "{$this->responseTypes[$code]["message"]}. {$message}", "status" => $this->responseTypes[$code]['status']]));
+            }
+
+            exit(json_encode($this->responseTypes[$code]));
+        }
+
+        // Set 500 HTTP response code, because the $code parameter is an unspecified code
+        http_response_code(500);
+
+        // Exit with a JSON message
+        exit(json_encode(["message" => "Error code and message is setup incorrect"]));
+
     }
 
 }
