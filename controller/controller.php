@@ -10,7 +10,7 @@ namespace CONTROLLER;
  */
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
-    protected $useToken;
+    protected $useToken; 
 
     protected $endpoints;
 
