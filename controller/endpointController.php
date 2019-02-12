@@ -5,7 +5,7 @@ namespace CONTROLLER;
  * Class EndpointController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
- * //TODO: Description
+ * //TODO: Description needed
  */
 class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
@@ -26,6 +26,14 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
             400 => ["message" => "Error 400: Invalid request", "status" => false],
             404 => ["message" => "Error 404: Endpoint not found", "status" => false]
         ];
+    }
+
+    /**
+     * index() should never be used
+     * @deprecated this function is NEVER called
+     */
+    public function index() {
+        exit(json_encode(["message" => "How did you get here? :)", "status" => true]));
     }
 
     /**
@@ -94,7 +102,6 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
         if($_SERVER["REQUEST_METHOD"] === "GET" && $isGET){
 
             $parameters = [];
-
             for($i = 3; $i < sizeof($request); $i++) {
                 array_push($parameters, $request[$i]);
             }
@@ -178,6 +185,7 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
                 exit(json_encode(["message" => "{$this->responseTypes[$code]["message"]}. {$message}", "status" => $this->responseTypes[$code]['status']]));
             }
 
+            // Exit with standard message
             exit(json_encode($this->responseTypes[$code]));
         }
 

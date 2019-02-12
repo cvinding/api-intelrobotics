@@ -11,8 +11,8 @@ return [
 
     "DATABASE" => "",
 
-    "USERNAME" => "root",
+    "USERNAME" => "phpmyadmin",
 
-    "PASSWORD" => ""
+    "PASSWORD" => "admin"
 
 ];

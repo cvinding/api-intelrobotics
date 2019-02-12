@@ -10,14 +10,23 @@ namespace CONTROLLER;
  */
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
+    protected $useToken;
+
     protected $endpoints;
 
     /**
      * Controller constructor.
-     * @param array $endpoints
+     * @param bool $useToken
      */
-    public function __construct(array $endpoints = []){
-        $this->endpoints = $endpoints;
+    public function __construct(bool $useToken = false){
+        $this->useToken = $useToken;
+    }
+
+    /**
+     * index() is used for listing the available endpoints
+     */
+    public function index() {
+        exit(json_encode(["Endpoints" => $this->getEndpoints(), "status" => true]));
     }
 
     /**
@@ -57,14 +66,51 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     }
 
     /**
-     * Get all valid endpoints
      * @return array
+     * @throws \ReflectionException
      */
     protected function getEndpoints() : array {
-        return $this->endpoints;
+        $class = new \ReflectionClass(get_class($this));
+        $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+        $returnArray = [];
+
+        foreach($methods as $method){
+
+            $temp = [];
+
+            if(strpos($method->name, "__") !== false || $method->name === "index") {
+                continue;
+            }
+
+            $temp["name"] = $method->name;
+
+            foreach ($method->getParameters() as $key => $parameter) {
+                $temp["parameter"]["$parameter->name"] = $parameter->getType()->getName();
+            }
+
+
+
+           // $temp["parameters"] = $parameters;
+
+            //$temp["type"] = $parameters[0]->getType();
+
+
+/*            foreach($parameters as $parameter) {
+                $temp["parameters"][] = $parameter->name;
+            }
+*/
+
+            array_push($returnArray, $temp);
+        }
+
+        return $returnArray;
     }
 
-
+    /**
+     *
+     * @return string
+     */
     public function __toString() : string {
         return "Controller name: ".get_class($this);
     }

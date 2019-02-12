@@ -9,8 +9,8 @@ namespace CONTROLLER\_IMPLEMENTS;
  */
 interface Controller {
 
-    //TODO: start this interface
-
     public function __construct();
+
+    public function index();
 
 }

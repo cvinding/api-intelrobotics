@@ -5,6 +5,7 @@ namespace CONTROLLER;
  * Class TemperatureController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
+ * //TODO: description needed
  */
 class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
@@ -12,27 +13,20 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
      * TemperatureController constructor.
      */
     public function __construct() {
-        parent::__construct([
-            "addTemperature" => ["newTemperature", "format", "newHumid"],
-            "getManuallySetTemperature",
-            "setManuallySetTemperature"
-        ]);
+        parent::__construct(true);
     }
 
     /**
-     * index() is used for listing the TemperatureController's endpoints
+     * @param int $temperature
+     * @param int $format
+     * @param int $humid
      */
-    public function index() {
-        exit(json_encode(["Endpoints" => $this->getEndpoints(), "status" => true]));
+    public function addTemperature(int $temperature, int $format, int $humid) {
+        exit(json_encode(["message" => "New temperature: {$temperature} has been inserted as {$format}. New humid: {$humid}", "status" => true]));
     }
 
-    /**
-     * @param int $newTemperature
-     * @param string $format
-     * @param int $newHumid
-     */
-    public function addTemperature(int $newTemperature, string $format, int $newHumid) {
-        exit(json_encode(["message" => "New temperature: {$newTemperature} has been inserted as {$format}. New humid: {$newHumid}", "status" => true]));
+    public function test(int $test) {
+
     }
 
 
