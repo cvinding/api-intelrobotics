@@ -10,12 +10,14 @@ namespace CONTROLLER;
  */
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
-    protected $useToken;
-
-    protected $endpoints;
+    /**
+     * Important variable for checking if the endpoint is secured with a token
+     * @var bool
+     */
+    private $useToken;
 
     /**
-     * Controller constructor.
+     * Controller constructor. Set t
      * @param bool $useToken
      */
     public function __construct(bool $useToken = false){
@@ -26,7 +28,12 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
      * index() is used for listing the available endpoints
      */
     public function index() {
-        exit(json_encode(["Endpoints" => $this->getEndpoints(), "status" => true]));
+        try {
+            exit(json_encode(["endpoints" => $this->getEndpointList(), "status" => true]));
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            exit(json_encode(["message" => "Server error"]));
+        }
     }
 
     /**
@@ -66,45 +73,43 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     }
 
     /**
+     * getEndpointList() returns an array of all the available endpoints this controller can offer
      * @return array
      * @throws \ReflectionException
      */
-    protected function getEndpoints() : array {
+    protected function getEndpointList() : array {
+        // Reflect the deprived class and get all PUBLIC methods
         $class = new \ReflectionClass(get_class($this));
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
-        $returnArray = [];
+        // Create a temporary array
+        $tempArray = [];
 
+        // Loop through each PUBLIC method
         foreach($methods as $method){
 
+            // Create a temporary variable
             $temp = [];
 
-            if(strpos($method->name, "__") !== false || $method->name === "index") {
+            // Check if method name starts with '__' OR method name is 'index' and then filter them out
+            // We don't care about the magic function and we also don't care about the index endpoint, because we're already there
+            if(strpos($method->name, "__") === 0 || $method->name === "index") {
                 continue;
             }
 
             $temp["name"] = $method->name;
 
+            // Loop through the methods parameters and find each parameter type, if any
             foreach ($method->getParameters() as $key => $parameter) {
-                $temp["parameter"]["$parameter->name"] = $parameter->getType()->getName();
+                $temp["parameters"][$parameter->name] = ($parameter->getType() !== NULL) ? $parameter->getType()->getName() : "not specified";
             }
 
-
-
-           // $temp["parameters"] = $parameters;
-
-            //$temp["type"] = $parameters[0]->getType();
-
-
-/*            foreach($parameters as $parameter) {
-                $temp["parameters"][] = $parameter->name;
-            }
-*/
-
-            array_push($returnArray, $temp);
+            // Push the temp. variable into the temp. array
+            array_push($tempArray, $temp);
         }
 
-        return $returnArray;
+        // Return the list of endpoints
+        return $tempArray;
     }
 
     /**

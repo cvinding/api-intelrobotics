@@ -25,8 +25,8 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
         exit(json_encode(["message" => "New temperature: {$temperature} has been inserted as {$format}. New humid: {$humid}", "status" => true]));
     }
 
-    public function test(int $test) {
-
+    public function getDefaultTemperature() {
+        exit(json_encode(["temperature" => ""]));
     }
 
 

@@ -10,22 +10,10 @@ namespace CONTROLLER;
 class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
     /**
-     * $responseTypes stores all the different kind of error responses for getting an endpoint
-     * @var array
-     */
-    private $responseTypes;
-
-    /**
      * EndpointController constructor.
      */
     public function __construct() {
         parent::__construct();
-
-        // Set response types
-        $this->responseTypes = [
-            400 => ["message" => "Error 400: Invalid request", "status" => false],
-            404 => ["message" => "Error 404: Endpoint not found", "status" => false]
-        ];
     }
 
     /**
@@ -41,7 +29,6 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @param string $request
      */
     public function getEndpoint(string $request) {
-
         // Check if the $request variable is empty
         if(strlen($request) <= 0){
             $this->exitResponse(400, "Endpoint not specified");
@@ -79,7 +66,6 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
 
         // Send a 200 HTTP response
         http_response_code(200);
-
     }
 
     /**
@@ -173,28 +159,30 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @param string $message
      */
     private function exitResponse(int $code, string $message = "") {
+        // Standard HTTP responses
+        $responses = [
+            400 => ["message" => "Error 400: Invalid request", "status" => false],
+            404 => ["message" => "Error 404: Endpoint not found", "status" => false],
+            500 => ["message" => "Error 500: Internal server error", "status" => false],
+        ];
 
         // Check if the $code is valid in our array
-        if(array_key_exists($code, $this->responseTypes) !== false) {
+        if(array_key_exists($code, $responses) !== false) {
 
             // Set HTTP response code
             http_response_code($code);
 
             // Exit with a JSON message
             if($message !== ""){
-                exit(json_encode(["message" => "{$this->responseTypes[$code]["message"]}. {$message}", "status" => $this->responseTypes[$code]['status']]));
+                exit(json_encode(["message" => "{$responses[$code]["message"]}. {$message}", "status" => $responses[$code]['status']]));
             }
 
             // Exit with standard message
-            exit(json_encode($this->responseTypes[$code]));
+            exit(json_encode($responses[$code]));
         }
 
-        // Set 500 HTTP response code, because the $code parameter is an unspecified code
-        http_response_code(500);
-
-        // Exit with a JSON message
-        exit(json_encode(["message" => "Error code and message is setup incorrect"]));
-
+        // Send a 500 HTTP error
+        $this->exitResponse(500, "Error code and message is setup incorrect");
     }
 
 }
