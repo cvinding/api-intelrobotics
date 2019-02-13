@@ -4,7 +4,6 @@ namespace CONFIG;
 /**
  * Database configurations
  */
-
 return [
 
     "HOSTNAME" => "localhost",

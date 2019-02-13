@@ -18,8 +18,8 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
 
     /**
      * @param float $temperature
-     * @param int $format
      * @param float $humidity
+     * @param int $format
      */
     public function addTemperature(float $temperature, float $humidity, int $format = 1) {
         exit(json_encode(["message" => "New temperature: {$temperature} has been inserted as {$format}. New humid: {$humidity}", "status" => true]));

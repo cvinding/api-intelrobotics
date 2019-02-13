@@ -15,6 +15,10 @@ class Database implements \DATABASE\_IMPLEMENTS\Database {
      */
     private $pdo;
 
+
+    protected $query;
+
+
     /**
      * Database constructor.
      */
@@ -23,7 +27,15 @@ class Database implements \DATABASE\_IMPLEMENTS\Database {
         $this->connect(require "../config/database.php");
     }
 
-    /**
+    public function query(string $query, array $bindable = []) {
+        if($this->query != $this->pdo->prepare($query)) {
+            die('Unable to prepare statement (check your syntax) - ' . $this->query->error);
+        }
+
+
+    }
+
+        /**
      * connect() opens a database connection
      * @param array $config
      * @return bool
@@ -42,6 +54,10 @@ class Database implements \DATABASE\_IMPLEMENTS\Database {
         }
         return true;
     }
+
+
+
+
 
     /**
      * getPDO() returns the PDO object
