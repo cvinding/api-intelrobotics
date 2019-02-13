@@ -8,13 +8,15 @@ return [
 
     "HOSTNAME" => "localhost",
 
+    "PORT" => 3307,
+
     "DATABASE" => "indeklima_api",
 
     "CHARSET" => "utf8mb4",
 
-    "USERNAME" => "phpmyadmin",
+    "USERNAME" => "root",
 
-    "PASSWORD" => "admin",
+    "PASSWORD" => "",
 
     "OPTIONS" => [
         // Useful for debugging, more error messages

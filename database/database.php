@@ -5,19 +5,22 @@ namespace DATABASE;
  * Class Database
  * @package DATABASE
  * @author Christian Vinding Rasmussen
- * //TODO: description needed
+ * A class for creating easy database queries.
+ **The class is made like this for expansion reasons
  */
 class Database implements \DATABASE\_IMPLEMENTS\Database {
 
     /**
-     * This is the PDO object
-     * @var $pdo
+     * This is the PDO connection object
+     * @var \PDO $pdo
      */
-    private $pdo;
+    private $pdo = NULL;
 
-
-    protected $query;
-
+    /**
+     * This is the PDO statement object
+     * @var \PDOStatement $query
+     */
+    private $query = NULL;
 
     /**
      * Database constructor.
@@ -27,44 +30,70 @@ class Database implements \DATABASE\_IMPLEMENTS\Database {
         $this->connect(require "../config/database.php");
     }
 
-    public function query(string $query, array $bindable = []) {
-        if($this->query != $this->pdo->prepare($query)) {
-            die('Unable to prepare statement (check your syntax) - ' . $this->query->error);
-        }
-
-
-    }
-
-        /**
+    /**
      * connect() opens a database connection
      * @param array $config
      * @return bool
      */
     private function connect(array $config) : bool {
         try {
+            // Create the database connection
             $this->pdo = new \PDO(
-                "mysql:host={$config['HOSTNAME']};dbname={$config['DATABASE']}:charset={$config['CHARSET']}",
+                "mysql:host={$config['HOSTNAME']};port={$config['PORT']};dbname={$config['DATABASE']};charset={$config['CHARSET']}",
                 $config['USERNAME'],
                 $config['PASSWORD'],
                 $config['OPTIONS']
             );
 
-        } catch (\PDOException $exception) {
-            exit($exception);
+        } catch (\PDOException $PDOException) {
+            exit($PDOException);
         }
+
+        // Return true if it came so far ;)
         return true;
     }
 
+    /**
+     * query() is used in conjunction with a fetch*() function
+     * @param string $query
+     * @param array $bindable
+     * @return Database
+     */
+    public function query(string $query, array $bindable = []) : \DATABASE\Database {
+        try {
+            // Prepare the query
+            $this->query = $this->pdo->prepare($query);
 
+            // Check if there is any bindable variables and use them if there are
+            if(isset($bindable) && !empty($bindable)){
+                // Execute with parameters
+                $this->query->execute($bindable);
+            } else {
+                // Execute without parameters
+                $this->query->execute();
+            }
 
+        } catch (\PDOException $PDOException) {
+            exit($PDOException);
+        }
 
+        // Return the instance of this object \DATABASE\Database
+        return $this;
+    }
 
     /**
-     * getPDO() returns the PDO object
-     * @return \PDO
+     * fetchArray() returns the fetched data as an ASSOCIATIVE array
+     * @return array $data
      */
-    protected function getPDO() : \PDO {
-        return $this->pdo;
+    public function fetchArray() : array {
+        // Fetch the data
+        $data = $this->query->fetchAll();
+
+        // Set the query to NULL
+        $this->query = NULL;
+
+        // Return the data
+        return $data;
     }
 
     /**

@@ -9,6 +9,6 @@ namespace DATABASE\_IMPLEMENTS;
  */
 interface Database {
 
-    //TODO: create an interface
+    //TODO: not needed
 
 }

@@ -5,6 +5,9 @@ namespace MODEL;
  * All these require statements is for the library made by Rob Waller,
  * please take a look in the '../libs/reallysimplejwt/' folder for licensing and a README about the library he has supplied.
  */
+// Exceptions
+require_once("../libs/reallysimplejwt/src/Exception/ValidateException.php");
+
 // Traits
 require_once("../libs/reallysimplejwt/src/Helper/JsonEncoder.php");
 
@@ -20,7 +23,6 @@ require_once("../libs/reallysimplejwt/src/Parse.php");
 require_once("../libs/reallysimplejwt/src/Parsed.php");
 require_once("../libs/reallysimplejwt/src/Validate.php");
 
-
 /**
  * Class AuthModel
  * @package MODEL
@@ -30,11 +32,13 @@ require_once("../libs/reallysimplejwt/src/Validate.php");
 class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
 
     public function createJWT() {
-
+        /*
         $db = new \DATABASE\Database();
 
-        $db->query("SELECT * FROM temperature");
+        $data = $db->query("SELECT * FROM room")->fetchArray();
 
+        var_dump($data);
+        */
 
         // Secret signing key TOP SECRET DO NOT SHARE THE KEY
         $secret = require "../config/secret.php";
@@ -53,21 +57,74 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
             "exp" => time() + $expiration,          // Expires
             "nbf" => time() + $notBefore,           // Not usable before
             "iat" => time(),                        // Issued at
-            "jti" => ""                             // JWT id
+            "jti" => "t22",                         // JWT id
+            "uid" => "u22"
         ];
 
 
-        $userId = 12;
+        var_dump($this->generateSecret(12));
 
 
         //$token = \ReallySimpleJWT\Token::create($userId, $secret, $expiration, $issuer);
 
-        //$token = \ReallySimpleJWT\Token::customPayload($config, $secret);
+        try {
+            $token = \ReallySimpleJWT\Token::customPayload($config, $secret);
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
 
 
 
 
-        return 0; //$token;
+
+        return $token; //$token;
+    }
+
+    public function generateSecret(int $length = 12) : string {
+        $letters = "abcdefghijklmnopqrstuvwxyz";
+
+        $numbers = "0123456789";
+
+        $specialChars = "*&!@%^#$";
+
+        $characters = [
+            [
+                "value" => $letters,
+                "used" => 0
+            ],
+            [
+                "value" =>strtoupper($letters),
+                "used" => 0
+            ],
+            [
+                "value" => $numbers,
+                "used" => 0
+            ],
+            [
+                "value" => $specialChars,
+                "used" => 0
+            ],
+        ];
+
+
+        $secret = "";
+
+        for($i = 0; $i < $length; $i++){
+
+            $random = rand(0,3);
+
+            if($usedOnce[$random] === 0) {
+                $secret .= $characters[$random][rand(0, strlen($characters[$random]) - 1)];
+                $usedOnce[$random]++;
+            }else {
+
+            }
+
+        }
+
+
+
+        return $secret;
     }
 
 }
