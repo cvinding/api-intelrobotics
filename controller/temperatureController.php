@@ -17,20 +17,27 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
     }
 
     /**
-     * @param int $temperature
+     * @param float $temperature
      * @param int $format
-     * @param int $humid
+     * @param float $humidity
      */
-    public function addTemperature(int $temperature, int $format, int $humid) {
-        exit(json_encode(["message" => "New temperature: {$temperature} has been inserted as {$format}. New humid: {$humid}", "status" => true]));
+    public function addTemperature(float $temperature, float $humidity, int $format = 1) {
+        exit(json_encode(["message" => "New temperature: {$temperature} has been inserted as {$format}. New humid: {$humidity}", "status" => true]));
     }
 
     /**
      *
      */
     public function getDefaultTemperature() {
-        exit(json_encode(["temperature" => 24, "format" => "celsius"]));
+        exit(json_encode(["temperature" => 24, "format" => "celsius", "status" => true]));
     }
 
+    /**
+     * @param float $temperature
+     * @param int $format
+     */
+    public function setDefaultTemperature(float $temperature, int $format = 1) {
+        exit(json_encode(["message" => "You have set a new default temperature", "status" => true]));
+    }
 
 }
