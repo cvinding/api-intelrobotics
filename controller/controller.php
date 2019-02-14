@@ -120,6 +120,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         // Standard HTTP responses
         $responses = [
             400 => ["message" => "Error 400: Invalid request", "status" => false],
+            403 => ["message" => "Error 403: Forbidden", "status" => false],
             404 => ["message" => "Error 404: Endpoint not found", "status" => false],
             500 => ["message" => "Error 500: Internal server error", "status" => false],
         ];

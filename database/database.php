@@ -97,6 +97,14 @@ class Database implements \DATABASE\_IMPLEMENTS\Database {
     }
 
     /**
+     * affectedRows() return all rows affected by an DELETE, INSERT or UPDATE statement
+     * @return int
+     */
+    public function affectedRows() : int {
+        return $this->query->rowCount();
+    }
+
+    /**
      * Database destructor.
      * Always close the connection after the object is out of scope
      */
