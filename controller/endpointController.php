@@ -57,8 +57,11 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
         $args = $this->methodParameters($controller, $action);
 
         // If the parameters send does not match the number it takes send an exitCode
-        if(sizeof($parameters) !== sizeof($args)){
+        // Else if the number of required arguments is 0, forget that any parameters where sent
+        if(sizeof($parameters) < sizeof($args)){
             $this->exitResponse(400, "Missing request arguments");
+        }elseif(sizeof($args) === 0) {
+            $parameters = [];
         }
 
         // Call the endpoint

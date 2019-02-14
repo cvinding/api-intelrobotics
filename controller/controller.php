@@ -10,6 +10,8 @@ namespace CONTROLLER;
  */
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
+    protected $requestMethod;
+
     /**
      * Important variable for checking if the endpoint is secured with a token
      * @var bool
@@ -17,11 +19,12 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     private $useToken;
 
     /**
-     * Controller constructor. Set t
+     * Controller constructor. Set the token
      * @param bool $useToken
      */
     public function __construct(bool $useToken = false){
         $this->useToken = $useToken;
+        $this->requestMethod = $_SERVER["REQUEST_METHOD"];
     }
 
     /**

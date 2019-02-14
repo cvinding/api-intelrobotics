@@ -22,6 +22,9 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * @param string $password
      */
     public function authorize(string $username, string $password) {
+
+        var_dump($this->requestMethod);
+
         try {
             /**
              * @var \MODEL\AuthModel $model
