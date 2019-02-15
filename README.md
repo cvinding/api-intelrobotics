@@ -13,4 +13,4 @@ https://github.com/RobDWaller/ReallySimpleJWT
 
 # Author
 
-Created by Christian Vinding Rasmussen (@czvr0) 
+Created by Christian Vinding Rasmussen (czvr0) 
