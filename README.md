@@ -8,6 +8,9 @@ A RESTful API for our simulation of a graduation project.
 
 # Libraries
 Really Simple JWT library for creating, validating etc. JSON Web Tokens. 
+
 https://github.com/RobDWaller/ReallySimpleJWT by Rob Waller 
+
+# Author
 
 Created by Christian Vinding Rasmussen (@czvr0) 
