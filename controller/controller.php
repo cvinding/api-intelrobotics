@@ -19,6 +19,13 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     private $useToken;
 
     /**
+     * An array of all the valid request methods and the security level.
+     * 0 being the lowest security level and 1 being the highest.
+     * @var array $validRequestMethods
+     */
+    private $validRequestMethods = ["GET" => 0, "POST" => 1];
+
+    /**
      * Controller constructor. Set the token
      * @param bool $useToken
      */
@@ -53,7 +60,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         $model = (strpos($id, 'MODEL\\') !== false) ? $id : "MODEL\\{$id}";
 
         // Check if this function is trying to call a banned Model
-        if(array_search($model,$bannedModels) !== false) {
+        if(array_search($model, $bannedModels) !== false) {
             Throw new \Exception("{$model} has been banned and cannot be called");
         }
 
@@ -145,6 +152,18 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
         // Send a 500 HTTP error
         $this->exitResponse(500, "Error code and message is setup incorrect");
+    }
+
+
+    protected function setRequestMethodLevel(int $level = 0) {
+        if($this->validRequestMethods[$this->requestMethod] <= $level){
+            $this->exitResponse(400, "Request method {$this->requestMethod} is not allowed on this endpoint");
+        }
+    }
+
+
+    protected function getValidRequestMethods() : array {
+        return $this->validRequestMethods;
     }
 
     /**

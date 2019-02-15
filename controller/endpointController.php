@@ -81,9 +81,9 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @return array
      */
     private function getParameters(array $request = [], bool $isGET = false) : array {
-        $validRequestMethods = ["GET", "POST"];
 
-        if(array_search($_SERVER["REQUEST_METHOD"], $validRequestMethods) === false){
+        // Check if the request method is valid
+        if(array_key_exists($_SERVER["REQUEST_METHOD"], $this->getValidRequestMethods()) === false){
             $this->exitResponse(400, "Illegal request method, only GET or POST is allowed");
         }
 
