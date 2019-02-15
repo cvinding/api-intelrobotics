@@ -31,7 +31,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
      */
     public function authenticateUser(string $username, string $password) : bool {
         //TODO: create authenticateUser()
-        return false;
+        return true;
     }
 
     /**
