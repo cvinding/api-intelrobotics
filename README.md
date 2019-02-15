@@ -7,9 +7,9 @@ A RESTful API for our simulation of a graduation project.
 * MIT Licensed
 
 # Libraries
-Really Simple JWT library for creating, validating etc. JSON Web Tokens. 
+Really Simple JWT library for handling JSON Web Tokens, by Rob Waller. 
 
-https://github.com/RobDWaller/ReallySimpleJWT by Rob Waller 
+https://github.com/RobDWaller/ReallySimpleJWT 
 
 # Author
 
