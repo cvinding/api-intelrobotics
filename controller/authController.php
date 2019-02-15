@@ -5,7 +5,7 @@ namespace CONTROLLER;
  * Class AuthController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
- * //TODO: description needed
+ * The AuthController is the endpoint used for API authentication.
  */
 class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
@@ -22,8 +22,7 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * @param string $password
      */
     public function authorize(string $username, string $password) {
-
-
+        $this->setRequestMethodLevel(1);
 
         try {
             /**

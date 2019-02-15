@@ -5,7 +5,7 @@ namespace MODEL;
  * Class Model
  * @package MODEL
  * @author Christian Vinding Rasmussen
- * TODO: description needed
+ * A base class for all models. Maybe useful for something some day :)
  */
 class Model implements \MODEL\_IMPLEMENTS\Model {
 
