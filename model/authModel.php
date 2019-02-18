@@ -31,6 +31,23 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
      */
     public function authenticateUser(string $username, string $password) : bool {
         //TODO: create authenticateUser()
+
+
+
+        $adServer = "ldaps://indeklima.local";
+
+        $ldap = ldap_connect($adServer);
+
+        $ldaprdn = 'MYDN.net' . "\\" . $username;
+
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+
+        $bind = @ldap_bind($ldap, $ldaprdn, $password);
+
+
+
+
         return true;
     }
 
