@@ -5,7 +5,9 @@ namespace CONTROLLER;
  * Class EndpointController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
- * //TODO: Description needed
+ * The EndpointController class is most unique controller.
+ * EndpointController is one of the only controllers to not be a controller for an endpoint.
+ * This class handles which endpoints the user sees, also checks tokens, parameters etc.
  */
 class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
@@ -41,20 +43,33 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
             $this->exitResponse(400, "Endpoint not specified");
         }
 
+        // Check if the request method is valid
+        if(array_key_exists($this->getRequestMethod(), $this->getValidRequestMethods()) === false){
+            $this->exitResponse(400, "Illegal request method, only GET or POST is allowed");
+        }
+
         // Name of the controller/endpoint
         $controllerName = $rawRequest[1];
 
-        // Which method we have to call
+        // Get the controller
+        $controller = $this->getController($controllerName);
+
+        // Get all HTTP headers
+        $headers = apache_request_headers();
+
+        // Check if the $controller is secured behind tokens
+        if($controller->useToken()) {
+            $this->checkToken($headers);
+        }
+
+        // Which endpoint/method we have to call
         $action = (isset($rawRequest[2]) && strlen($rawRequest[2]) > 0) ? $rawRequest[2] : "index";
 
         // All the GET and POST parameters
         $parameters = $this->getParameters($rawRequest, isset($rawRequest[3]));
 
-        // Get the controller
-        $controller = $this->getController($controllerName);
-
         // Check if the method exists and how many parameters the method takes if any
-        $args = $this->methodParameters($controller, $action);
+        $args = $this->getMethodParameters($controller, $action);
 
         // If the parameters send does not match the number it takes send an exitCode
         // Else if the number of required arguments is 0, forget that any parameters where sent
@@ -72,6 +87,39 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
     }
 
     /**
+     * checkToken() is used to check if the 'Authorization' header is set and
+     * @param array $headers
+     */
+    private function checkToken(array $headers) {
+        try {
+            /**
+             * @var \MODEL\AuthModel $auth
+             */
+            $auth = $this->getModel("AuthModel");
+
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
+
+        // Check if token isset
+        if(!isset($headers["Authorization"])) {
+            $this->exitResponse(400, "Missing authorization token");
+        }
+
+        $authorization = explode(" ", $headers["Authorization"]);
+
+        try {
+            // Check if token is valid
+            if(!$auth->validateToken($authorization[1])){
+                $this->exitResponse(403, "The endpoint you are trying to access is restricted");
+            }
+
+        } catch (\Exception $exception){
+            $this->exitResponse(403, "Invalid token used");
+        }
+    }
+
+    /**
      * getParameters() checks if the REQUEST_METHOD is GET or POST.
      * Then checks if it has been supplied with GET parameters.
      * If there is no GET parameters, assume there is raw JSON data send with a POST request
@@ -81,14 +129,9 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @return array
      */
     private function getParameters(array $request = [], bool $isGET = false) : array {
-        $validRequestMethods = ["GET", "POST"];
-
-        if(array_search($_SERVER["REQUEST_METHOD"], $validRequestMethods) === false){
-            $this->exitResponse(400, "Illegal request method, only GET or POST is allowed");
-        }
 
         // Check if REQUEST_METHOD is GET and if there is supplied GET parameters
-        if($_SERVER["REQUEST_METHOD"] === "GET" && $isGET){
+        if($this->getRequestMethod() === "GET" && $isGET){
 
             $parameters = [];
             for($i = 3; $i < sizeof($request); $i++) {
@@ -102,11 +145,11 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
         $data = file_get_contents("php://input");
 
         // Decode JSON data
-        $decoded = json_decode($data, true);
+        $decodedParameters = json_decode($data, true);
 
         // Check if data was valid JSON
         if(json_last_error() === JSON_ERROR_NONE){
-            return $decoded;
+            return $decodedParameters;
         }
 
         // Return $_POST if raw JSON data is invalid
@@ -144,7 +187,7 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @param string $method
      * @return \ReflectionParameter[]
      */
-    private function methodParameters(\CONTROLLER\Controller $controller, string $method) : array {
+    private function getMethodParameters(\CONTROLLER\Controller $controller, string $method) : array {
         try {
             $method = new \ReflectionMethod($controller, $method);
 

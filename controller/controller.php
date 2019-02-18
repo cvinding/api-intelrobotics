@@ -6,17 +6,32 @@ namespace CONTROLLER;
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
  * This Controller class is used for inheritance. This Controller is the parent of all other controllers.
- * The class set the controllers model so it is easier to create a new instance of.
+ * A Controller is a class where all public methods, except a few, are API endpoints.
+ * This class helps the other controllers with common methods and a default index().
  */
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
-    protected $requestMethod;
+    /**
+     * A variable for holding the request method used for accessing the endpoint
+     * @var string $requestMethod
+     */
+    private $requestMethod;
 
     /**
      * Important variable for checking if the endpoint is secured with a token
-     * @var bool
+     * @var bool $useToken
      */
     private $useToken;
+
+    /**
+     * An array of all the valid request methods and the security level.
+     * 0 being the lowest security level and 1 being the highest.
+     * @var array $validRequestMethods
+     */
+    private $validRequestMethods = [
+        "GET" => 0,
+        "POST" => 1
+    ];
 
     /**
      * Controller constructor. Set the token
@@ -31,8 +46,11 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
      * index() is used for listing the available endpoints
      */
     public function index() {
+        $this->setRequestMethodLevel();
+
         try {
             exit(json_encode(["endpoints" => $this->getEndpointList(), "status" => true]));
+
         } catch (\Exception $exception) {
             $this->exitResponse(500, "Index can not be shown");
         }
@@ -53,7 +71,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         $model = (strpos($id, 'MODEL\\') !== false) ? $id : "MODEL\\{$id}";
 
         // Check if this function is trying to call a banned Model
-        if(array_search($model,$bannedModels) !== false) {
+        if(array_search($model, $bannedModels) !== false) {
             Throw new \Exception("{$model} has been banned and cannot be called");
         }
 
@@ -148,7 +166,43 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     }
 
     /**
-     *
+     * setRequestMethodLevel() is used for setting a security level to the endpoint.
+     * This enables you to disable a request method that is only meant for reading data for example GET.
+     * @param int $level
+     */
+    protected function setRequestMethodLevel(int $level = 0) {
+        // Check if the request method is allowed in this endpoint and if not tell the user
+        if($this->validRequestMethods[$this->requestMethod] < $level){
+            $this->exitResponse(400, "{$this->requestMethod} requests is not allowed on this endpoint");
+        }
+    }
+
+    /**
+     * getRequestMethod() returns the request method used
+     * @return string
+     */
+    protected function getRequestMethod() : string {
+        return $this->requestMethod;
+    }
+
+    /**
+     * getValidRequestMethods() returns all valid request methods and the request methods security level
+     * @return array
+     */
+    protected function getValidRequestMethods() : array {
+        return $this->validRequestMethods;
+    }
+
+    /**
+     * useToken() returns bool, true if a token is needed to access the endpoint
+     * @return bool
+     */
+    public function useToken() : bool {
+        return $this->useToken;
+    }
+
+    /**
+     * A standard function for seeing which controller you're working with
      * @return string
      */
     public function __toString() : string {

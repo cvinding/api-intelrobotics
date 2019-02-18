@@ -8,7 +8,9 @@ require_once("../config/reallysimplejwt.php");
  * Class AuthModel
  * @package MODEL
  * @author Christian Vinding Rasmussen
- * //TODO: description needed
+ * The AuthModel is the model that handles everything from authenticating the user to validating and creating tokens.
+ * It is also the only class that uses "reallysimplejwt" which is a JSON Web Token library made by Rob Waller.
+ * You can find more information about the library in the libs folder
  */
 class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
 
@@ -109,6 +111,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
      * validateToken() is used for validating the token with the library and also to check if the token is in the db
      * @param string $token
      * @return bool
+     * @throws \Exception
      */
     public function validateToken(string $token) : bool {
         // Create DB connection
@@ -117,10 +120,16 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         // Secret signing key TOP SECRET DO NOT SHARE THE KEY
         $secret = require "../config/secret.php";
 
-        $validToken = \ReallySimpleJWT\Token::validate($token, $secret);
+        try {
+            // Validate token
+            $validToken = \ReallySimpleJWT\Token::validate($token, $secret);
 
-        // Return the payload claims
-        $payload = \ReallySimpleJWT\Token::getPayload($token, $secret);
+            // Return the payload claims
+            $payload = \ReallySimpleJWT\Token::getPayload($token, $secret);
+
+        } catch (\Exception $exception) {
+            Throw new \Exception($exception);
+        }
 
         // Get expiration time()
         $expiration = $payload["exp"];
@@ -137,6 +146,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         }else {
             // DELETE the token if expired
             $db->query("DELETE FROM token WHERE id = :token_id AND user_id = :user_id", ["token_id" => $payload['jti'], "user_id" => $payload['uid']]);
+            //Throw new \Exception("Authorization token expired");
             return false;
         }
 
