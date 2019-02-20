@@ -157,6 +157,8 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
             return false;
         }
 
+        //TODO: fix token store database some errors ???
+
         // Check if the token id and the user id is the same for the token and the
         if($payload["jti"] !== $data[0]["id"] && $payload["uid"] !== $data[0]["user_id"]) {
             return false;

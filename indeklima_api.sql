@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 12, 2019 at 02:38 PM
+-- Generation Time: Feb 18, 2019 at 02:01 PM
 -- Server version: 10.1.37-MariaDB-0+deb9u1
 -- PHP Version: 7.2.15-1+0~20190209065123.16+stretch~1.gbp3ad8c0
 
@@ -123,6 +123,7 @@ INSERT INTO `temperature_format` (`id`, `name`) VALUES
 
 CREATE TABLE `token` (
   `id` int(11) NOT NULL,
+  `token` text NOT NULL,
   `user_id` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
