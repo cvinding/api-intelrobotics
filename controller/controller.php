@@ -102,6 +102,8 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         $class = new \ReflectionClass(get_class($this));
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
+        //sort($methods);
+
         // Create a temporary array
         $tempArray = [];
 
@@ -121,7 +123,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
             // Loop through the methods parameters and find each parameter type, if any
             foreach ($method->getParameters() as $key => $parameter) {
-                $temp["parameters"][($parameter->getType() !== NULL) ? $parameter->getType()->getName() : "not specified"][] = $parameter->name;
+                $temp["parameters"][$parameter->name] = ($parameter->getType() !== NULL) ? $parameter->getType()->getName() : "not specified";
             }
 
             // Push the temp. variable into the temp. array

@@ -106,10 +106,8 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
             $this->exitResponse(400, "Missing authorization token");
         }
 
-
-
+        // Separate the "Bearer" part and the "Token" part of the Authorization header
         $authorization = explode(" ", $headers["Authorization"]);
-
 
         try {
             // Check if token is valid
@@ -132,7 +130,6 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @return array
      */
     private function getParameters(array $request = [], bool $isGET = false) : array {
-
         // Check if REQUEST_METHOD is GET and if there is supplied GET parameters
         if($this->getRequestMethod() === "GET" && $isGET){
 

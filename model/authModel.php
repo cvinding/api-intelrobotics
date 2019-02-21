@@ -24,7 +24,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
      * Describes how long a token is alive in seconds, e.g. 3600 seconds = 1 hour
      * @var int $expiration
      */
-    private $expiration = 3600*2;
+    private $expiration = 3600*5;
 
     /**
      * @param string $username
@@ -35,7 +35,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         //TODO: create authenticateUser()
 
 
-
+        /*
         $adServer = "ldaps://indeklima.local";
 
         $ldap = ldap_connect($adServer);
@@ -46,7 +46,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
         $bind = @ldap_bind($ldap, $ldaprdn, $password);
-
+        */
 
 
 
@@ -96,12 +96,12 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         $db = new \DATABASE\Database();
 
         // Insert the token
-        $rowCount = $db->query("INSERT INTO token (id, token, user_id) VALUES (:id, :token, :user_id)",["id" => $tokenID, "token" => $token, "user_id" => $username])->affectedRows();
+        /*$rowCount = $db->query("INSERT INTO token (id, token, user_id) VALUES (:id, :token, :user_id)",["id" => $tokenID, "token" => $token, "user_id" => $username])->affectedRows();
 
         // Check if the token was inserted into the table
         if($rowCount <= 0){
             Throw new \Exception("Token could not be inserted into table");
-        }
+        }*/
 
         // Return the token
         return $token;

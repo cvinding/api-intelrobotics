@@ -1,7 +1,11 @@
 <?php
 namespace controller;
 
-
+/**
+ * Class LocationController
+ * @package controller
+ * @author Christian Vinding Rasmussen
+ */
 class LocationController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
     /**
@@ -12,7 +16,7 @@ class LocationController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
     }
 
     /**
-     * //TODO: comment
+     * getRoom() is an endpoint used for returning a list of all rooms available
      */
     public function getRooms() {
         $this->setRequestMethodLevel();
