@@ -110,7 +110,6 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
 
         $authorization = explode(" ", $headers["Authorization"]);
 
-        var_dump($authorization);
 
         try {
             // Check if token is valid

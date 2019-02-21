@@ -43,4 +43,19 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
         exit(json_encode(["message" => "You have set a new default temperature", "status" => true]));
     }
 
+    public function getRoomTemperature(int $id) {
+        $this->setRequestMethodLevel();
+        try {
+            /**
+             * @var \MODEL\TemperatureModel $model
+             */
+            $model = $this->getModel("TemperatureModel");
+
+            exit(json_encode(["room" => $model->getRoomTemperatureById($id), "status" => true]));
+
+        } catch (\Exception $exception){
+            exit($exception);
+        }
+    }
+
 }

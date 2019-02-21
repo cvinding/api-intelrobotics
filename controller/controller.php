@@ -197,7 +197,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
      * useToken() returns bool, true if a token is needed to access the endpoint
      * @return bool
      */
-    public function useToken() : bool {
+    protected function useToken() : bool {
         return $this->useToken;
     }
 

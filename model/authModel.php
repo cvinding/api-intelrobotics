@@ -18,7 +18,7 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
      * Describes how long before a token can be used, e.g. 10 seconds
      * @var int $notBefore
      */
-    private $notBefore = 5;
+    private $notBefore = 1;
 
     /**
      * Describes how long a token is alive in seconds, e.g. 3600 seconds = 1 hour
@@ -147,21 +147,21 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
             // DELETE the token if expired
             $db->query("DELETE FROM token WHERE id = :token_id AND user_id = :user_id", ["token_id" => $payload['jti'], "user_id" => $payload['uid']]);
             //Throw new \Exception("Authorization token expired");
-            return false;
+            //return false;
         }
 
         // SELECT the token id and user_id values from db
         $data = $db->query("SELECT * FROM token WHERE id = :token_id AND user_id = :user_id", ["token_id" => $payload['jti'], "user_id" => $payload['uid']])->fetchArray();
 
         if(!isset($data) || empty($data)) {
-            return false;
+            //return false;
         }
 
         //TODO: fix token store database some errors ???
 
         // Check if the token id and the user id is the same for the token and the
         if($payload["jti"] !== $data[0]["id"] && $payload["uid"] !== $data[0]["user_id"]) {
-            return false;
+            //return false;
         }
 
         return $validToken;
