@@ -9,6 +9,9 @@ error_reporting(E_ALL);
 // Require the autoloader class
 require_once "../autoloader.php";
 
+// Allow all website to see the API content
+header('Access-Control-Allow-Origin: *');
+
 // All content is JSON
 header('Content-Type: application/json');
 
