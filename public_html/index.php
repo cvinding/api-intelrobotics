@@ -9,8 +9,15 @@ error_reporting(E_ALL);
 // Require the autoloader class
 require_once "../autoloader.php";
 
-// Allow all website to see the API content
-header('Access-Control-Allow-Origin: *');
+// Allow all our own website to see the API content
+$origin = $_SERVER['HTTP_ORIGIN'];
+$allowed_domains = [
+    'http://indeklima.local:8080'
+];
+
+if (in_array($origin, $allowed_domains)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+}
 
 // All content is JSON
 header('Content-Type: application/json');
