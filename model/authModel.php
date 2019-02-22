@@ -74,9 +74,9 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
 
         // Custom config
         $config = [
-            "iss" => "www.indeklima-api.local",     // Issuer
+            "iss" => "api.indeklima.local",     // Issuer
             "sub" => "User Authorization Token",    // Subject
-            "aud" => "www.indeklima-api.local",     // Audience
+            "aud" => "api.indeklima.local",     // Audience
             "exp" => time() + $expiration,          // Expires
             "nbf" => time() + $notBefore,           // Not usable before
             "iat" => time(),                        // Issued at
