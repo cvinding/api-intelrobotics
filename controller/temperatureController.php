@@ -60,6 +60,11 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
              */
             $model = $this->getModel("TemperatureModel");
 
+            $result = $model->setDefaultTemperature($temperature, $format);
+
+            if(!$result) {
+                exit(json_encode(["message" => "The requested temperature is already set", "status" => false]));
+            }
 
             exit(json_encode(["message" => "You have set a new default temperature", "status" => true]));
 

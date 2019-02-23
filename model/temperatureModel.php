@@ -52,9 +52,9 @@ class TemperatureModel extends Model implements \MODEL\_IMPLEMENTS\Model {
             "format" => $format
         ];
 
-        //TODO: insert/update data
+        $result = $db->query("UPDATE temperature_default SET temperature = :temperature, temperature_format_id = :format WHERE id = 1", $entryData)->affectedRows();
 
-        return 0;
+        return (bool) $result;
     }
 
     /**
@@ -82,10 +82,10 @@ class TemperatureModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         $db = new \DATABASE\Database();
 
         // Select all relevant data
-        $data = $db->query("SELECT m.room_id id, m.temperature, m.humidity, s.name format FROM temperature m INNER JOIN temperature_format s ON m.temperature_format_id = s.id WHERE m.room_id = ?", [$id])->fetchArray();
+        $data = $db->query("SELECT m.room_id id, m.temperature, m.humidity, s.name format FROM temperature m INNER JOIN temperature_format s ON m.temperature_format_id = s.id WHERE m.room_id = ? ORDER BY m.id LIMIT 1", [$id])->fetchArray();
 
         // Return the data
-        return $data[0];
+        return (!empty($data)) ? $data[0] : ["id" => $id, "temperature" => "No data", "humidity" => "No data", "format" => "No data"];
     }
 
 }
