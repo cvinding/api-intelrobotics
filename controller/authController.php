@@ -47,4 +47,25 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         }
     }
 
+    /**
+     * @param string $token
+     */
+    public function validate(string $token) {
+        $this->setRequestMethodLevel();
+
+        try {
+            /**
+             * @var \MODEL\AuthModel $model
+             */
+            $model = $this->getModel("AuthModel");
+
+            $token = $model->validateToken($token);
+
+            exit(json_encode(["valid" => $token, "status" => true]));
+
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
+    }
+
 }

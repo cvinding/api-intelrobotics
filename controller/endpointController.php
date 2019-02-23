@@ -31,6 +31,13 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @param string $request
      */
     public function getEndpoint(string $request) {
+        // Check if request method is OPTIONS and send a 200 http response code
+        // Used for keeping the Preflighted requests in check ;)
+        if($_SERVER['REQUEST_METHOD'] === "OPTIONS"){
+            http_response_code(200);
+            exit();
+        }
+
         // Check if the $request variable is empty
         if(strlen($request) <= 0){
             $this->exitResponse(400, "Endpoint not specified");

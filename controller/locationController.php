@@ -26,6 +26,8 @@ class LocationController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
              */
             $model = $this->getModel("LocationModel");
 
+
+
             exit(json_encode(["rooms" => $model->getRooms(), "status" => true]));
 
         } catch (\Exception $exception) {
