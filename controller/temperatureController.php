@@ -13,7 +13,7 @@ class TemperatureController extends Controller implements \CONTROLLER\_IMPLEMENT
      * TemperatureController constructor.
      */
     public function __construct() {
-        parent::__construct(false);
+        parent::__construct(true);
     }
 
     /**
