@@ -5,7 +5,7 @@
  */
 
 return [
-    'https://web.indeklima.local/'
+    'https://web.indeklima.local'
 ];
 
 //TODO: upload ny api
