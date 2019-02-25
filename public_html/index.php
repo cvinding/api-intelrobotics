@@ -12,7 +12,7 @@ require_once "../autoloader.php";
 // Allow all our own website to see the API content
 $origin = (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : false;
 
-if($origin) {
+if($origin !== false) {
     $allowed_domains = require "../config/access_list.php";
 
     if (in_array($origin, $allowed_domains)) {

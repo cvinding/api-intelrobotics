@@ -53,6 +53,19 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         return true;
     }
 
+
+
+    // Database class
+    //$db = new \DATABASE\Database();
+    // CREATETOKEN() Insert the token
+    /*$rowCount = $db->query("INSERT INTO token (id, token, user_id) VALUES (:id, :token, :user_id)",["id" => $tokenID, "token" => $token, "user_id" => $username])->affectedRows();
+
+    // Check if the token was inserted into the table
+    if($rowCount <= 0){
+        Throw new \Exception("Token could not be inserted into table");
+    }*/
+
+
     /**
      * createJWT() create a JSON Web Token
      * @param string $username
@@ -74,9 +87,9 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
 
         // Custom config
         $config = [
-            "iss" => "api.indeklima.local",     // Issuer
+            "iss" => "api.indeklima.local",         // Issuer
             "sub" => "User Authorization Token",    // Subject
-            "aud" => "api.indeklima.local",     // Audience
+            "aud" => "api.indeklima.local",         // Audience
             "exp" => time() + $expiration,          // Expires
             "nbf" => time() + $notBefore,           // Not usable before
             "iat" => time(),                        // Issued at
@@ -91,17 +104,6 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         } catch (\Exception $exception) {
             exit($exception);
         }
-
-        // Database class
-        $db = new \DATABASE\Database();
-
-        // Insert the token
-        /*$rowCount = $db->query("INSERT INTO token (id, token, user_id) VALUES (:id, :token, :user_id)",["id" => $tokenID, "token" => $token, "user_id" => $username])->affectedRows();
-
-        // Check if the token was inserted into the table
-        if($rowCount <= 0){
-            Throw new \Exception("Token could not be inserted into table");
-        }*/
 
         // Return the token
         return $token;
