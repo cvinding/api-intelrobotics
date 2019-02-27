@@ -2,7 +2,7 @@
 namespace MODEL;
 
 // Load the Library "reallysimplejwt"
-require_once("../config/reallysimplejwt.php");
+require_once "../vendor/autoload.php";
 
 /**
  * Class AuthModel
@@ -35,8 +35,26 @@ class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
         //TODO: create authenticateUser()
 
 
+        $hostname = "indeklima.local";
+
+
+        $dn = "OU=Employees,DC=indeklima,DC=local";
+
+
+/*        $ldap = ldap_connect($hostname);
+
+        ldap_set_option($ldap,LDAP_OPT_PROTOCOL_VERSION,3);
+        ldap_set_option($ldap,LDAP_OPT_REFERRALS,0);
+
+        if($bind = @ldap_bind($ldap, $username.$password, $password)){
+            var_dump("TEST DEN ER FORBUNDET");
+        }
+*/
         /*
         $adServer = "ldaps://indeklima.local";
+
+
+
 
         $ldap = ldap_connect($adServer);
 
