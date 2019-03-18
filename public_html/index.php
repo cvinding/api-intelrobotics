@@ -29,9 +29,6 @@ header("Access-Control-Allow-Headers: Authorization, Content-Type");
 // Start the autoloader class
 \Autoloader::register();
 
-
-
-
 // Start the API
 $endpoint = new \CONTROLLER\EndpointController();
 $endpoint->getEndpoint($_GET['endpoint']);

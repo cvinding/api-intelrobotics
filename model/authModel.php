@@ -12,7 +12,7 @@ require_once "../vendor/autoload.php";
  * It is also the only class that uses "reallysimplejwt" which is a JSON Web Token library made by Rob Waller.
  * You can find more information about the library in the libs folder
  */
-class AuthModel extends Model implements \MODEL\_IMPLEMENTS\Model {
+class AuthModel extends Model {
 
     /**
      * Describes how long before a token can be used, e.g. 10 seconds

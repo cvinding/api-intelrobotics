@@ -10,7 +10,7 @@ return [
 
     "PORT" => 3307,
 
-    "DATABASE" => "indeklima_api",
+    "DATABASE" => "intelrobotics_api",
 
     "CHARSET" => "utf8mb4",
 

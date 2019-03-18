@@ -5,10 +5,10 @@ namespace DATABASE;
  * Class Database
  * @package DATABASE
  * @author Christian Vinding Rasmussen
- * A class for creating easy database queries.
- **The class is made like this for expansion reasons
+ * Database class for creating easy database queries.
+ * //TODO: make ORM maybe?
  */
-class Database implements \DATABASE\_IMPLEMENTS\Database {
+class Database {
 
     /**
      * This is the PDO connection object

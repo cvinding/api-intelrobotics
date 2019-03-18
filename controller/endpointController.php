@@ -27,15 +27,21 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
     }
 
     /**
-     * getEndpoint() is used for getting the endpoint
+     * getEndpoint() is used for checking if the request is correctly send and setup, before then returning an endpoint
      * @param string $request
      */
     public function getEndpoint(string $request) {
         // Check if request method is OPTIONS and send a 200 http response code
         // Used for keeping the Preflighted requests in check ;)
+        //TODO: do something else with the Preflighted requests
         if($_SERVER['REQUEST_METHOD'] === "OPTIONS"){
             http_response_code(200);
             exit();
+        }
+
+        // Check if the request method is valid
+        if(array_key_exists($this->getRequestMethod(), $this->getValidRequestMethods()) === false){
+            $this->exitResponse(400, "Illegal request method, only GET or POST is allowed");
         }
 
         // Check if the $request variable is empty
@@ -50,11 +56,6 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
             $this->exitResponse(400, "Endpoint not specified");
         }
 
-        // Check if the request method is valid
-        if(array_key_exists($this->getRequestMethod(), $this->getValidRequestMethods()) === false){
-            $this->exitResponse(400, "Illegal request method, only GET or POST is allowed");
-        }
-
         // Name of the controller/endpoint
         $controllerName = $rawRequest[1];
 
@@ -62,7 +63,7 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
         $controller = $this->getController($controllerName);
 
         // Get all HTTP headers
-        $headers = apache_request_headers();
+        $headers = $this->getRequestHeaders();
 
         // Check if the $controller is secured behind tokens
         if($controller->useToken()) {
@@ -161,6 +162,20 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
 
         // Return $_POST if raw JSON data is invalid
         return $_POST;
+    }
+
+    /**
+     * getRequestHeaders() is used for returning all the request headers
+     * @return array
+     */
+    private function getRequestHeaders() : array {
+        $headers = [];
+        foreach($_SERVER as $key => $value){
+            if(strpos($key, 'HTTP') !== false) {
+                $headers[$key] = $value;
+            }
+        }
+        return $headers;
     }
 
     /**

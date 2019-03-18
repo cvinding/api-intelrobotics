@@ -5,7 +5,6 @@
  */
 
 return [
-    'https://web.indeklima.local'
+    "http://web.intelrobotics.local",
+    "https://web.intelrobotics.local"
 ];
-
-//TODO: upload ny api

@@ -3,7 +3,7 @@
 /**
  * Class Autoloader
  * @author Christian Vinding Rasmussen
- * //TODO: description needed
+ * Autoloader class is a class used for automatically calling all the instanced classes
  */
 class Autoloader {
 

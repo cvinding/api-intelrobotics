@@ -37,7 +37,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
      * Controller constructor. Set the token
      * @param bool $useToken
      */
-    public function __construct(bool $useToken = false){
+    public function __construct(bool $useToken = false) {
         $this->useToken = $useToken;
         $this->requestMethod = $_SERVER["REQUEST_METHOD"];
     }
@@ -101,8 +101,6 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         // Reflect the deprived class and get all PUBLIC methods
         $class = new \ReflectionClass(get_class($this));
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
-
-        //sort($methods);
 
         // Create a temporary array
         $tempArray = [];
