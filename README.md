@@ -1,5 +1,5 @@
-# indeklima-api
-A RESTful API for our simulation of a graduation project. 
+# intelrobotics-api
+A RESTful API for an Information Technology exam 
 * MVC inspired
 * PHP 7.2+ 
 * JSON API
