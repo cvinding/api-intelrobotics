@@ -27,6 +27,12 @@ class AuthModel extends Model {
     private $expiration = 3600*5;
 
     /**
+     * $user is an array for storing the authenticated user's information
+     * @var array $user
+     */
+    private $user = [];
+
+    /**
      * @param string $username
      * @param string $password
      * @return bool
@@ -39,6 +45,9 @@ class AuthModel extends Model {
 
 
         $dn = "OU=Employees,DC=indeklima,DC=local";
+
+
+        $this->user["COMPANY_GROUP"] = "HR";
 
 
 /*        $ldap = ldap_connect($hostname);
@@ -71,26 +80,13 @@ class AuthModel extends Model {
         return true;
     }
 
-
-
-    // Database class
-    //$db = new \DATABASE\Database();
-    // CREATETOKEN() Insert the token
-    /*$rowCount = $db->query("INSERT INTO token (id, token, user_id) VALUES (:id, :token, :user_id)",["id" => $tokenID, "token" => $token, "user_id" => $username])->affectedRows();
-
-    // Check if the token was inserted into the table
-    if($rowCount <= 0){
-        Throw new \Exception("Token could not be inserted into table");
-    }*/
-
-
     /**
      * createJWT() create a JSON Web Token
-     * @param string $username
+     * @param array $claims
      * @return string
      * @throws \Exception
      */
-    public function createToken(string $username) : string {
+    public function createToken(array $claims) : string {
         // Secret signing key TOP SECRET DO NOT SHARE THE KEY
         $secret = require "../config/secret.php";
 
@@ -105,15 +101,16 @@ class AuthModel extends Model {
 
         // Custom config
         $config = [
-            "iss" => "api.indeklima.local",         // Issuer
+            "iss" => "api.intelrobotics.local",         // Issuer
             "sub" => "User Authorization Token",    // Subject
-            "aud" => "api.indeklima.local",         // Audience
+            "aud" => "api.intelrobotics.local",         // Audience
             "exp" => time() + $expiration,          // Expires
             "nbf" => time() + $notBefore,           // Not usable before
             "iat" => time(),                        // Issued at
-            "jti" => $tokenID,                      // JWT id
-            "uid" => $username                      // Custom field: User id
+            "jti" => $tokenID                      // JWT id
         ];
+
+        $config = array_merge($config, $claims);
 
         try {
             // Use the ReallySimpleJWT library to create a token
@@ -235,6 +232,14 @@ class AuthModel extends Model {
 
         // Return the $secret string
         return $secret;
+    }
+
+    /**
+     * getUser() returns the authenticated user
+     * @return array
+     */
+    public function getUser() : array {
+        return $this->user;
     }
 
 }

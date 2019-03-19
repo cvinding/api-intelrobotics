@@ -13,7 +13,21 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * AuthController constructor.
      */
     public function __construct() {
+        /*parent::__construct([
+            "authorize" => [
+                "REQUEST_METHOD_LEVEL" => 1,
+                "TOKEN" => false
+            ],
+            "validate" => [
+                "REQUEST_METHOD_LEVEL" => 0,
+                "TOKEN" => false
+            ]
+        ]);*/
+
         parent::__construct();
+
+        //$endpointSettings = ;
+
     }
 
     /**
@@ -22,13 +36,14 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * @param string $password
      */
     public function authorize(string $username, string $password) {
-        $this->setRequestMethodLevel(1);
+        //$this->setRequestMethodLevel(1);
 
         try {
             /**
              * @var \MODEL\AuthModel $model
              */
             $model = $this->getModel("AuthModel");
+
 
             $isAuthenticated = $model->authenticateUser($username, $password);
 
@@ -38,7 +53,12 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
                 $this->exitResponse(403, "Username and password does not match a registered user");
             }
 
-            $token = $model->createToken($username);
+            $authUser = $model->getUser();
+
+            $token = $model->createToken([
+                "uid" => $username,
+                "company_group" => $authUser["COMPANY_GROUP"]
+            ]);
 
             exit(json_encode(["token" => $token, "status" => true]));
 
@@ -51,7 +71,7 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * @param string $token
      */
     public function validate(string $token) {
-        $this->setRequestMethodLevel();
+        //$this->setRequestMethodLevel();
 
         try {
             /**

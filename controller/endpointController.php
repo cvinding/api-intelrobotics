@@ -65,10 +65,13 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
         // Get all HTTP headers
         $headers = $this->getRequestHeaders();
 
+
+
+
         // Check if the $controller is secured behind tokens
-        if($controller->useToken()) {
+        /*if($controller->useToken()) {
             $this->checkToken($headers);
-        }
+        }*/
 
         // Which endpoint/method we have to call
         $action = (isset($rawRequest[2]) && strlen($rawRequest[2]) > 0) ? $rawRequest[2] : "index";
@@ -78,6 +81,9 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
 
         // Check if the method exists and how many parameters the method takes if any
         $args = $this->getMethodParameters($controller, $action);
+
+
+
 
         // If the parameters send does not match the number it takes send an exitCode
         // Else if the number of required arguments is 0, forget that any parameters where sent

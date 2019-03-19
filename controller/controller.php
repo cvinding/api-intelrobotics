@@ -23,6 +23,10 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
      */
     private $useToken;
 
+
+    private $endpointSettings;
+
+
     /**
      * An array of all the valid request methods and the security level.
      * 0 being the lowest security level and 1 being the highest.
@@ -33,12 +37,40 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         "POST" => 1
     ];
 
-    /**
-     * Controller constructor. Set the token
-     * @param bool $useToken
-     */
-    public function __construct(bool $useToken = false) {
-        $this->useToken = $useToken;
+
+    public function __construct(array $endpointSettings = []) {
+
+        if(empty($endpointSettings) && (get_class($this) !== "CONTROLLER\EndpointController" && get_class($this) !== "CONTROLLER\Controller")) {
+
+            try {
+                $class = new \ReflectionClass(get_class($this));
+                $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+
+                foreach($methods as $method) {
+                    var_dump($method);
+                }
+
+
+            } catch (\Exception $exception) {
+                exit($exception);
+            }
+
+        }
+
+
+        foreach($endpointSettings as $endpoint => $settings) {
+
+            foreach($settings as $name => $setting) {
+
+                var_dump($name);
+                var_dump($setting);
+            }
+
+        }
+
+
+        //$this->useToken = $useToken;
         $this->requestMethod = $_SERVER["REQUEST_METHOD"];
     }
 
