@@ -1,4 +1,4 @@
-# intelrobotics-api
+# api-intelrobotics
 A RESTful API for an Information Technology exam 
 * MVC inspired
 * PHP 7.2+ 
