@@ -14,9 +14,9 @@ return [
 
     "CHARSET" => "utf8mb4",
 
-    "USERNAME" => "root",
+    "USERNAME" => "phpmyadmin",
 
-    "PASSWORD" => "",
+    "PASSWORD" => "admin",
 
     "OPTIONS" => [
         // Useful for debugging, more error messages

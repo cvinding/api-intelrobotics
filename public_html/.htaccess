@@ -1,2 +1,3 @@
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
 RewriteEngine on
 RewriteRule ^([a-zA-Z0-9\-\_\/]*)$ index.php?endpoint=$1

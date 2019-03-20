@@ -40,15 +40,11 @@ class AuthModel extends Model {
     public function authenticateUser(string $username, string $password) : bool {
         //TODO: create authenticateUser()
 
-
         $hostname = "indeklima.local";
-
 
         $dn = "OU=Employees,DC=indeklima,DC=local";
 
-
-        $this->user["COMPANY_GROUP"] = "HR";
-
+        $this->user["COMPANY_GROUP"] = ["HR"];
 
 /*        $ldap = ldap_connect($hostname);
 
@@ -62,9 +58,6 @@ class AuthModel extends Model {
         /*
         $adServer = "ldaps://indeklima.local";
 
-
-
-
         $ldap = ldap_connect($adServer);
 
         $ldaprdn = 'MYDN.net' . "\\" . $username;
@@ -74,8 +67,6 @@ class AuthModel extends Model {
 
         $bind = @ldap_bind($ldap, $ldaprdn, $password);
         */
-
-
 
         return true;
     }
@@ -158,30 +149,31 @@ class AuthModel extends Model {
         $difference = $expiration - $now;
 
         // Check if the token difference is between 600 seconds (10 minutes) and 0 seconds and refresh the token
-        if($difference <= 600 && $difference >= 0){
-            //TODO: REFRESH TOKEN
-        }else {
-            // DELETE the token if expired
-          //  $db->query("DELETE FROM token WHERE id = :token_id AND user_id = :user_id", ["token_id" => $payload['jti'], "user_id" => $payload['uid']]);
-            //Throw new \Exception("Authorization token expired");
-            //return false;
-        }
-
-        // SELECT the token id and user_id values from db
-        //$data = $db->query("SELECT * FROM token WHERE id = :token_id AND user_id = :user_id", ["token_id" => $payload['jti'], "user_id" => $payload['uid']])->fetchArray();
-
-        /*if(!isset($data) || empty($data)) {
-            //return false;
-        }*/
-
-        //TODO: fix token store database some errors ???
-
-        // Check if the token id and the user id is the same for the token and the
-        /*if($payload["jti"] !== $data[0]["id"] && $payload["uid"] !== $data[0]["user_id"]) {
-            //return false;
-        }*/
+        if($difference <= 600 && $difference >= 0){ /*TODO: REFRESH TOKEN*/ }else {}
 
         return $validToken;
+    }
+
+    /**
+     * getTokenClaim() is used for returning a specific token claim
+     * @param string $token
+     * @param string $claim
+     * @return string|array
+     */
+    public function getTokenClaim(string $token, string $claim) {
+        // Secret signing key TOP SECRET DO NOT SHARE THE KEY
+        $secret = require "../config/secret.php";
+
+        $payload = NULL;
+
+        try {
+            $payload = \ReallySimpleJWT\Token::getPayload($token, $secret);
+
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
+
+        return $payload[$claim];
     }
 
     /**
@@ -191,7 +183,6 @@ class AuthModel extends Model {
      * @throws \Exception
      */
     public function generateSecret(int $length = 12) : string {
-
         // Check if $length is at least 12
         if($length < 12) {
             Throw new \Exception("Secret must be at least 12 characters long");

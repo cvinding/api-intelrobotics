@@ -12,20 +12,10 @@ namespace CONTROLLER;
 class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
     /**
-     * A variable for holding the request method used for accessing the endpoint
-     * @var string $requestMethod
+     * An array for all of the endpoint settings
+     * @var array $endpointSettings
      */
-    private $requestMethod;
-
-    /**
-     * Important variable for checking if the endpoint is secured with a token
-     * @var bool $useToken
-     */
-    private $useToken;
-
-
     private $endpointSettings;
-
 
     /**
      * An array of all the valid request methods and the security level.
@@ -37,20 +27,41 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         "POST" => 1
     ];
 
-
+    /**
+     * Controller constructor. Used for setting endpoint settings
+     * @param array $endpointSettings
+     */
     public function __construct(array $endpointSettings = []) {
-
-        if(empty($endpointSettings) && (get_class($this) !== "CONTROLLER\EndpointController" && get_class($this) !== "CONTROLLER\Controller")) {
+        // If endpoint settings is empty and the controllers name is NOT CONTROLLER\EndpointController OR CONTROLLER\Controller, create a standard set of settings
+        if(empty($endpointSettings) && get_class($this) !== "CONTROLLER\EndpointController" && get_class($this) !== "CONTROLLER\Controller") {
 
             try {
+                // Get all public methods from the calling class
                 $class = new \ReflectionClass(get_class($this));
                 $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
-
                 foreach($methods as $method) {
-                    var_dump($method);
-                }
 
+                    // Check that they belong to calling class and NOT CONTROLLER\Controller
+                    if($method->getDeclaringClass()->getName() === "CONTROLLER\Controller") {
+                        continue;
+                    }
+
+                    // Check that the method is NOT a magic method
+                    if(strpos($method->name, "__") !== false) {
+                        continue;
+                    }
+
+                    // Create the settings, these settings is unsafe and it is best if the endpoint has its own settings
+                    $endpointSettings[$method->getName()] = [
+                        "REQUEST_METHOD_LEVEL" => 0,
+                        "TOKEN" => false,
+                        "PERMISSIONS" => [
+                            false
+                        ]
+                    ];
+
+                }
 
             } catch (\Exception $exception) {
                 exit($exception);
@@ -58,28 +69,14 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
         }
 
-
-        foreach($endpointSettings as $endpoint => $settings) {
-
-            foreach($settings as $name => $setting) {
-
-                var_dump($name);
-                var_dump($setting);
-            }
-
-        }
-
-
-        //$this->useToken = $useToken;
-        $this->requestMethod = $_SERVER["REQUEST_METHOD"];
+        // Set endpoint settings
+        $this->endpointSettings = $endpointSettings;
     }
 
     /**
      * index() is used for listing the available endpoints
      */
     public function index() {
-        $this->setRequestMethodLevel();
-
         try {
             exit(json_encode(["endpoints" => $this->getEndpointList(), "status" => true]));
 
@@ -134,6 +131,8 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
         $class = new \ReflectionClass(get_class($this));
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
+        $settings = $this->endpointSettings;
+
         // Create a temporary array
         $tempArray = [];
 
@@ -149,7 +148,36 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
                 continue;
             }
 
-            $temp["name"] = $method->name;
+            //$temp["name"] = $method->name;
+
+            foreach($settings[$method->name] as $setting => $value) {
+
+                // Check if setting is PERMISSIONS and its false
+                if($setting === "PERMISSIONS" && $value[0] === false){
+                    $temp[strtolower($setting)] = false;
+                    continue;
+                }
+
+                // Check if setting is REQUEST_METHOD_LEVEL and translate the numbers to requests
+                if($setting === "REQUEST_METHOD_LEVEL") {
+                    $validRequestMethods = $this->validRequestMethods;
+
+                    $requests = "";
+
+                    foreach($validRequestMethods as $name => $level) {
+                        if($value <= $level){
+                            $requests .= $name.", ";
+                        }
+                    }
+
+                    $temp["request_methods"] = rtrim($requests, ", ");
+
+                    continue;
+                }
+
+                // Set setting equal the value
+                $temp[strtolower($setting)] = $value;
+            }
 
             // Loop through the methods parameters and find each parameter type, if any
             foreach ($method->getParameters() as $key => $parameter) {
@@ -157,7 +185,8 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
             }
 
             // Push the temp. variable into the temp. array
-            array_push($tempArray, $temp);
+            //array_push($tempArray, $temp);
+            $tempArray[$method->name] = $temp;
         }
 
         // Return the list of endpoints
@@ -198,39 +227,19 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     }
 
     /**
-     * setRequestMethodLevel() is used for setting a security level to the endpoint.
-     * This enables you to disable a request method that is only meant for reading data for example GET.
-     * @param int $level
+     * getEndpointSettings() returns the endpoint settings
+     * @return array
      */
-    protected function setRequestMethodLevel(int $level = 0) {
-        // Check if the request method is allowed in this endpoint and if not tell the user
-        if($this->validRequestMethods[$this->requestMethod] < $level){
-            $this->exitResponse(400, "{$this->requestMethod} requests is not allowed on this endpoint");
-        }
+    protected function getEndpointSettings() : array {
+        return $this->endpointSettings;
     }
 
     /**
-     * getRequestMethod() returns the request method used
-     * @return string
-     */
-    protected function getRequestMethod() : string {
-        return $this->requestMethod;
-    }
-
-    /**
-     * getValidRequestMethods() returns all valid request methods and the request methods security level
+     * getValidRequestMethods() return the valid request methods and their request level
      * @return array
      */
     protected function getValidRequestMethods() : array {
         return $this->validRequestMethods;
-    }
-
-    /**
-     * useToken() returns bool, true if a token is needed to access the endpoint
-     * @return bool
-     */
-    protected function useToken() : bool {
-        return $this->useToken;
     }
 
     /**

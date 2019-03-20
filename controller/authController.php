@@ -13,21 +13,23 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * AuthController constructor.
      */
     public function __construct() {
-        /*parent::__construct([
+        // Set this endpoints settings
+        parent::__construct([
             "authorize" => [
                 "REQUEST_METHOD_LEVEL" => 1,
-                "TOKEN" => false
+                "TOKEN" => false,
+                "PERMISSIONS" => [
+                    false
+                ]
             ],
             "validate" => [
-                "REQUEST_METHOD_LEVEL" => 0,
-                "TOKEN" => false
+                "REQUEST_METHOD_LEVEL" => 1,
+                "TOKEN" => false,
+                "PERMISSIONS" => [
+                    false
+                ]
             ]
-        ]);*/
-
-        parent::__construct();
-
-        //$endpointSettings = ;
-
+        ]);
     }
 
     /**
@@ -36,14 +38,11 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
      * @param string $password
      */
     public function authorize(string $username, string $password) {
-        //$this->setRequestMethodLevel(1);
-
         try {
             /**
              * @var \MODEL\AuthModel $model
              */
             $model = $this->getModel("AuthModel");
-
 
             $isAuthenticated = $model->authenticateUser($username, $password);
 
@@ -68,11 +67,10 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
     }
 
     /**
+     * validate() is used for validating a token
      * @param string $token
      */
     public function validate(string $token) {
-        //$this->setRequestMethodLevel();
-
         try {
             /**
              * @var \MODEL\AuthModel $model
