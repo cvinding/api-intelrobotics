@@ -18,30 +18,25 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         parent::__construct([
             "getExtNews" => [
                 "REQUEST_METHOD_LEVEL" => 0,
-                "TOKEN" => false,
-                "PERMISSIONS" => [
-                    false
-                ]
+                "TOKEN" => false
             ],
             "getIntNews" => [
                 "REQUEST_METHOD_LEVEL" => 0,
-                "TOKEN" => true,
-                "PERMISSIONS" => [
-                    false
-                ]
+                "TOKEN" => true
             ],
             "getAbout" => [
                 "REQUEST_METHOD_LEVEL" => 0,
-                "TOKEN" => false,
-                "PERMISSIONS" => [
-                    false
-                ]
+                "TOKEN" => false
             ],
             "getProducts" => [
                 "REQUEST_METHOD_LEVEL" => 0,
-                "TOKEN" => false,
+                "TOKEN" => false
+            ],
+            "createNews" => [
+                "REQUEST_METHOD_LEVEL" => 1,
+                "TOKEN" => true,
                 "PERMISSIONS" => [
-                    false
+                    "Webmaster"
                 ]
             ]
         ]);
@@ -136,5 +131,10 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit($exception);
         }
     }
+
+    public function createNews(string $title, string $description, int $internal, string $webDomain, string $author) {
+
+    }
+
 
 }
