@@ -5,6 +5,6 @@
  */
 
 return [
-    "http://web.intelrobotics.local",
-    "https://web.intelrobotics.local"
+    "http://intelrobotics.local",
+    "http://intra.intelrobotics.local"
 ];

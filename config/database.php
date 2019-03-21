@@ -8,15 +8,15 @@ return [
 
     "HOSTNAME" => "localhost",
 
-    "PORT" => 3307,
+    "PORT" => 3306,
 
     "DATABASE" => "intelrobotics_api",
 
     "CHARSET" => "utf8mb4",
 
-    "USERNAME" => "phpmyadmin",
+    "USERNAME" => "root",
 
-    "PASSWORD" => "admin",
+    "PASSWORD" => "",
 
     "OPTIONS" => [
         // Useful for debugging, more error messages
