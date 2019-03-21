@@ -22,4 +22,13 @@ class InfoModel extends Model {
         return $data;
     }
 
+    public function getProducts(string $webDomain) : array {
+        $db = new \DATABASE\Database();
+
+        $data = $db->query("SELECT product.title, product.description, product.author, product.updated FROM website_products product WHERE (SELECT id FROM company_web_domains web WHERE web.name = :web_domain) = product.web_domain", ["web_domain" => $webDomain])
+            ->fetchArray();
+
+        return $data;
+    }
+
 }

@@ -26,6 +26,13 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
                 "PERMISSIONS" => [
                     false
                 ]
+            ],
+            "getProducts" => [
+                "REQUEST_METHOD_LEVEL" => 0,
+                "TOKEN" => false,
+                "PERMISSIONS" => [
+                    false
+                ]
             ]
         ]);
     }
@@ -82,5 +89,20 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         }
     }
 
+    public function getProducts(string $webDomain) {
+        try {
+            /**
+             * @var \MODEL\InfoModel $model
+             */
+            $model = $this->getModel("InfoModel");
+
+            $result = $model->getProducts($webDomain);
+
+            exit(json_encode(["products" => $result, "status" => true]));
+
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
+    }
 
 }
