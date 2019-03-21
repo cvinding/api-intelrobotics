@@ -1,9 +1,24 @@
 <?php
 namespace MODEL;
 
-
+/**
+ * Class InfoModel
+ * @package MODEL
+ * @author Christian Vinding Rasmussen
+ * InfoModel is an model for accessing the news, about section and products of the website.
+ * It is also used for adding, editing and deleting that information.
+ */
 class InfoModel extends Model {
 
+    /**
+     * getNews() is used for selecting all the news from the table website_news
+     * @param int $titleCount
+     * @param int $bodyCount
+     * @param int $limit
+     * @param string $webDomain
+     * @param int $internal
+     * @return array
+     */
     public function getNews(int $titleCount, int $bodyCount, int $limit, string $webDomain, int $internal) : array {
         $db = new \DATABASE\Database();
 
@@ -13,6 +28,11 @@ class InfoModel extends Model {
         return $data;
     }
 
+    /**
+     * getAbout() is used for selecting the about from the table website_about
+     * @param string $webDomain
+     * @return array
+     */
     public function getAbout(string $webDomain) : array {
         $db = new \DATABASE\Database();
 
@@ -22,6 +42,11 @@ class InfoModel extends Model {
         return $data;
     }
 
+    /**
+     * getProducts() is used for selecting the products from the table website_products
+     * @param string $webDomain
+     * @return array
+     */
     public function getProducts(string $webDomain) : array {
         $db = new \DATABASE\Database();
 

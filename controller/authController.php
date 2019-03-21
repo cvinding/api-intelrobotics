@@ -17,17 +17,11 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         parent::__construct([
             "authorize" => [
                 "REQUEST_METHOD_LEVEL" => 1,
-                "TOKEN" => false,
-                "PERMISSIONS" => [
-                    false
-                ]
+                "TOKEN" => false
             ],
             "validate" => [
                 "REQUEST_METHOD_LEVEL" => 1,
-                "TOKEN" => false,
-                "PERMISSIONS" => [
-                    false
-                ]
+                "TOKEN" => false
             ]
         ]);
     }

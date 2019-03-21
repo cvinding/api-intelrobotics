@@ -148,15 +148,7 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
                 continue;
             }
 
-            //$temp["name"] = $method->name;
-
             foreach($settings[$method->name] as $setting => $value) {
-
-                // Check if setting is PERMISSIONS and its false
-                if($setting === "PERMISSIONS" && $value[0] === false){
-                    $temp[strtolower($setting)] = false;
-                    continue;
-                }
 
                 // Check if setting is REQUEST_METHOD_LEVEL and translate the numbers to requests
                 if($setting === "REQUEST_METHOD_LEVEL") {
@@ -177,6 +169,11 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
                 // Set setting equal the value
                 $temp[strtolower($setting)] = $value;
+            }
+
+            // Check if setting permissions isset and set it to false
+            if(!isset($settings[$method->name]["PERMISSIONS"])){
+                $temp["permissions"] = false;
             }
 
             // Loop through the methods parameters and find each parameter type, if any
