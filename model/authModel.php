@@ -66,7 +66,7 @@ class AuthModel extends Model {
 
         $dn = "OU=Employees,DC=indeklima,DC=local";
 
-        $this->user["COMPANY_GROUP"] = [];
+  //      $this->user["COMPANY_GROUP"] = ["HR"];
 
 
 
