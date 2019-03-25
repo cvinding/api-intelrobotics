@@ -40,11 +40,38 @@ class AuthModel extends Model {
     public function authenticateUser(string $username, string $password) : bool {
         //TODO: create authenticateUser()
 
-        $hostname = "indeklima.local";
+        $hostname = "ldap://ad.intelrobotics.dk";
+
+        $ldap = ldap_connect($hostname);
+
+        $ldaprdn = 'ad' . "\\" . $username;
+
+        if(!ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3)) {
+            var_dump("PROTOCOL_VERSION failed");
+        }
+
+        if(!ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0)) {
+            var_dump("REFERRALS failed");
+        }
+
+        if(!ldap_start_tls($ldap)) {
+            var_dump("TLS failed");
+        }
+
+        $ldapbind = @ldap_bind($ldap, $username, $password);
+
+        ldap_close($ldap);
+
+        var_dump("status :". $ldapbind);
 
         $dn = "OU=Employees,DC=indeklima,DC=local";
 
-        $this->user["COMPANY_GROUP"] = ["HR"];
+        $this->user["COMPANY_GROUP"] = [];
+
+
+
+
+
 
 /*        $ldap = ldap_connect($hostname);
 

@@ -31,6 +31,9 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
      * @param string $request
      */
     public function getEndpoint(string $request) {
+
+        var_dump($request);die;
+
         // Check if request method is OPTIONS and send a 200 http response code
         // Used for keeping the Preflighted requests in check ;)
         //TODO: do something else with the Preflighted requests
