@@ -72,8 +72,6 @@ class AuthModel extends Model {
                 $this->user["SECURITY_GROUPS"][$i] = explode("=",explode(",",$groups[$i])[0])[1];
             }
 
-            var_dump($this->user);
-
         }
 
         ldap_close($ldapConn);
