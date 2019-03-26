@@ -24,6 +24,10 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
                 "REQUEST_METHOD_LEVEL" => 0,
                 "TOKEN" => true
             ],
+            "getNews" => [
+                "REQUEST_METHOD_LEVEL" => 0,
+                "TOKEN" => true
+            ],
             "getAbout" => [
                 "REQUEST_METHOD_LEVEL" => 0,
                 "TOKEN" => false
@@ -36,7 +40,28 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
                 "REQUEST_METHOD_LEVEL" => 1,
                 "TOKEN" => true,
                 "PERMISSIONS" => [
-                    "Webmaster"
+                    "IT_SG"
+                ]
+            ],
+            "createProduct" => [
+                "REQUEST_METHOD_LEVEL" => 1,
+                "TOKEN" => true,
+                "PERMISSIONS" => [
+                    "IT_SG"
+                ]
+            ],
+            "deleteNews" => [
+                "REQUEST_METHOD_LEVEL" => 1,
+                "TOKEN" => true,
+                "PERMISSIONS" => [
+                    "IT_SG"
+                ]
+            ],
+            "deleteProduct" => [
+                "REQUEST_METHOD_LEVEL" => 1,
+                "TOKEN" => true,
+                "PERMISSIONS" => [
+                    "IT_SG"
                 ]
             ]
         ]);
@@ -89,6 +114,31 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
     }
 
     /**
+     * getNews() is used for getting external and internal news
+     * @param int $titleCount
+     * @param int $bodyCount
+     * @param string $webDomain
+     */
+    public function getNews(int $titleCount, int $bodyCount, string $webDomain) {
+        try {
+            /**
+             * @var \MODEL\InfoModel $model
+             */
+            $model = $this->getModel("InfoModel");
+
+            $output = [];
+
+            $output["external"] = $model->getNews($titleCount, $bodyCount, 0, $webDomain, 0);
+            $output["internal"] = $model->getNews($titleCount, $bodyCount, 0, $webDomain, 1);
+
+            exit(json_encode(["news" => $output, "status" => true]));
+
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
+    }
+
+    /**
      * getAbout() is an endpoint for getting the about section of the website
      * @param string $webDomain
      */
@@ -132,7 +182,19 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         }
     }
 
-    public function createNews(string $title, string $description, int $internal, string $webDomain, string $author) {
+    public function createNews(string $title, string $description, int $internal, string $webDomain) {
+        //TODO: this function
+    }
+
+    public function createProduct(string $title, string $description, string $webDomain) {
+        //TODO: this function
+    }
+
+    public function deleteNews(int $id) {
+
+    }
+
+    public function deleteProduct(int $id) {
 
     }
 

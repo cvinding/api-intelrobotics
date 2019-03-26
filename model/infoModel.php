@@ -22,7 +22,16 @@ class InfoModel extends Model {
     public function getNews(int $titleCount, int $bodyCount, int $limit, string $webDomain, int $internal) : array {
         $db = new \DATABASE\Database();
 
-        $data = $db->query("SELECT SUBSTRING(news.title, 1, :titleCount) title, SUBSTRING(news.description, 1, :bodyCount) description, news.author, news.updated FROM website_news news WHERE internal = :internal AND (SELECT web.id FROM company_web_domains web WHERE web.name = :web_domain) = news.web_domain ORDER BY id DESC LIMIT :limit", ["titleCount" => $titleCount, "bodyCount" => $bodyCount, "internal" => $internal, "web_domain" => $webDomain, "limit" => $limit])
+        $query = "SELECT id, SUBSTRING(news.title, 1, :titleCount) title, SUBSTRING(news.description, 1, :bodyCount) description, news.author, news.updated FROM website_news news WHERE internal = :internal AND (SELECT web.id FROM company_web_domains web WHERE web.name = :web_domain) = news.web_domain ORDER BY id DESC";
+
+        $values = ["titleCount" => $titleCount, "bodyCount" => $bodyCount, "internal" => $internal, "web_domain" => $webDomain];
+
+        if($limit !== 0) {
+            $query .= " LIMIT :limit";
+            $values["limit"] = $limit;
+        }
+
+        $data = $db->query($query, $values)
             ->fetchArray();
 
         return $data;
