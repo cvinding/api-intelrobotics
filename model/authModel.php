@@ -66,12 +66,12 @@ class AuthModel extends Model {
 
             $groups = $entries[0]["memberof"];
 
-            $this->user["SECURITY_GROUPS"] = [];
-
             foreach ($groups as $group) {
-                $this->user["SECURITY_GROUPS"][] = explode("=",explode(",",$group)[0])[1];
+                array_push($this->user["SECURITY_GROUPS"], explode("=",explode(",",$group)[0])[1]);
             }
 
+            var_dump($this->user);
+            
         }
 
         ldap_close($ldapConn);
