@@ -68,8 +68,8 @@ class AuthModel extends Model {
 
             $this->user["SECURITY_GROUPS"] = [];
 
-            foreach ($groups as $key => $group) {
-                $this->user["SECURITY_GROUPS"][$key] = explode("=",explode(",",$group)[0])[1];
+            for ($i = 0; $i < $groups["count"]; $i++) {
+                $this->user["SECURITY_GROUPS"][$i] = explode("=",explode(",",$groups[$i])[0])[1];
             }
 
             var_dump($this->user);
