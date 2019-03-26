@@ -28,20 +28,24 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     ];
 
     /**
+     * Last used token
+     * @var string $token
+     */
+    private $token = NULL;
+
+    /**
      * Controller constructor. Used for setting endpoint settings
      * @param array $endpointSettings
      */
     public function __construct(array $endpointSettings = []) {
         // If endpoint settings is empty and the controllers name is NOT CONTROLLER\EndpointController OR CONTROLLER\Controller, create a standard set of settings
         if(empty($endpointSettings) && get_class($this) !== "CONTROLLER\EndpointController" && get_class($this) !== "CONTROLLER\Controller") {
-
             try {
                 // Get all public methods from the calling class
                 $class = new \ReflectionClass(get_class($this));
                 $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
                 foreach($methods as $method) {
-
                     // Check that they belong to calling class and NOT CONTROLLER\Controller
                     if($method->getDeclaringClass()->getName() === "CONTROLLER\Controller") {
                         continue;
@@ -60,7 +64,6 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
                             false
                         ]
                     ];
-
                 }
 
             } catch (\Exception $exception) {

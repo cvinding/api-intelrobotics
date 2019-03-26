@@ -184,6 +184,8 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
     public function createNews(string $title, string $description, int $internal, string $webDomain) {
         //TODO: this function
+
+
     }
 
     public function createProduct(string $title, string $description, string $webDomain) {

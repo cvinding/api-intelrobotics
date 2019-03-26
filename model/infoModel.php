@@ -65,4 +65,8 @@ class InfoModel extends Model {
         return $data;
     }
 
+    public function createNews(string $title, string $description, int $internal, string $webDomain) {
+
+    }
+
 }
