@@ -173,7 +173,9 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
         }
 
         // Get the token claims
-        $claims = $auth->getTokenClaim($token, "company_group");
+        $claims = $auth->getTokenClaim($token, "security_groups");
+
+        var_dump($claims);
 
         foreach($permissions as $permission) {
             // If any of the claims match any of the endpoints permission, give them access

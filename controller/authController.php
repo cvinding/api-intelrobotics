@@ -50,7 +50,7 @@ class AuthController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
             $token = $model->createToken([
                 "uid" => $username,
-                "company_group" => $authUser["COMPANY_GROUP"]
+                "security_groups" => $authUser["SECURITY_GROUPS"]
             ]);
 
             exit(json_encode(["token" => $token, "status" => true]));

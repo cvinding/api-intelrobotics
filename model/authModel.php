@@ -38,64 +38,45 @@ class AuthModel extends Model {
      * @return bool
      */
     public function authenticateUser(string $username, string $password) : bool {
-        //TODO: create authenticateUser()
-
         $hostname = "ldap://ad.intelrobotics.dk";
 
-        $ldap = ldap_connect($hostname);
+        $ldapConn = ldap_connect($hostname);
 
-        $ldaprdn = 'ad' . "\\" . $username;
+        $ldapRDN = 'AD' . "\\" . $username;
 
-        if(!ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3)) {
-            var_dump("PROTOCOL_VERSION failed");
+        ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($ldapConn, LDAP_OPT_X_TLS_REQUIRE_CERT, 0);
+        ldap_set_option($ldapConn, LDAP_OPT_REFERRALS, 0);
+
+        //TODO: create fronter like
+        if(!ldap_start_tls($ldapConn)) {
+            var_dump("LDAP TLS connection failed");
         }
 
-        if(!ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0)) {
-            var_dump("REFERRALS failed");
+        $ldapBind = ldap_bind($ldapConn, $ldapRDN, $password);
+
+        if($ldapBind) {
+
+            $ldapBaseDN = "OU=IntelRobotics,DC=ad,DC=intelrobotics,DC=dk";
+            $search = "(&(sAMAccountName={$username}))";
+
+            $result = ldap_search($ldapConn, $ldapBaseDN, $search);
+
+            $entries = ldap_get_entries($ldapConn, $result);
+
+            $groups = $entries[0]["memberof"];
+
+            $this->user["SECURITY_GROUPS"] = [];
+
+            foreach ($groups as $group) {
+                $this->user["SECURITY_GROUPS"][] = explode("=",explode(",",$group)[0])[1];
+            }
+
         }
 
-        if(!ldap_start_tls($ldap)) {
-            var_dump("TLS failed");
-        }
+        ldap_close($ldapConn);
 
-        $ldapbind = @ldap_bind($ldap, $username, $password);
-
-        ldap_close($ldap);
-
-        var_dump("status :". $ldapbind);
-
-        $dn = "OU=Employees,DC=indeklima,DC=local";
-
-  //      $this->user["COMPANY_GROUP"] = ["HR"];
-
-
-
-
-
-
-/*        $ldap = ldap_connect($hostname);
-
-        ldap_set_option($ldap,LDAP_OPT_PROTOCOL_VERSION,3);
-        ldap_set_option($ldap,LDAP_OPT_REFERRALS,0);
-
-        if($bind = @ldap_bind($ldap, $username.$password, $password)){
-            var_dump("TEST DEN ER FORBUNDET");
-        }
-*/
-        /*
-        $adServer = "ldaps://indeklima.local";
-
-        $ldap = ldap_connect($adServer);
-
-        $ldaprdn = 'MYDN.net' . "\\" . $username;
-
-        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-
-        $bind = @ldap_bind($ldap, $ldaprdn, $password);
-        */
-
-        return true;
+        return $ldapBind;
     }
 
     /**
@@ -119,9 +100,9 @@ class AuthModel extends Model {
 
         // Custom config
         $config = [
-            "iss" => "api.intelrobotics.local",         // Issuer
+            "iss" => "api.intelrobotics.com",         // Issuer
             "sub" => "User Authorization Token",    // Subject
-            "aud" => "api.intelrobotics.local",         // Audience
+            "aud" => "api.intelrobotics.com",         // Audience
             "exp" => time() + $expiration,          // Expires
             "nbf" => time() + $notBefore,           // Not usable before
             "iat" => time(),                        // Issued at
