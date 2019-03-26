@@ -38,6 +38,11 @@ class AuthModel extends Model {
      * @return bool
      */
     public function authenticateUser(string $username, string $password) : bool {
+
+        //TODO: remove this if using an actual server
+        $this->user["SECURITY_GROUPS"] = ["Administration_SG", "IT_SG"];
+        return true;
+
         $hostname = "ldap://ad.intelrobotics.dk";
 
         $ldapConn = ldap_connect($hostname);
