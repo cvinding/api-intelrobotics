@@ -14,7 +14,7 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
                 "REQUEST_METHOD_LEVEL" => 1,
                 "TOKEN" => true,
                 "PERMISSIONS" => [
-                    "HR"
+                    "Administration_SG"
                 ]
             ]
         ]);
@@ -27,6 +27,8 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
     public function searchUserList(string $searchInput) {
         //TODO: used by HR to search for user + CPR number
+
+        exit(json_encode(["result" => $searchInput, "status" => true]));
     }
 
 
