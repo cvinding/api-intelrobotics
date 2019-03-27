@@ -65,8 +65,16 @@ class InfoModel extends Model {
         return $data;
     }
 
-    public function createNews(string $title, string $description, int $internal, string $webDomain) {
+    public function createNews(string $title, string $description, int $internal, string $webDomain, string $author) : bool {
+        $db = new \DATABASE\Database();
 
+        $values = ["title" => $title, "description" => $description, "internal" => $internal, "web_domain" => $webDomain, "author" => $author];
+
+        $result = $db->query("INSERT INTO website_news (title, description, internal, web_domain, author) VALUES (:title, :description, :internal, (SELECT id FROM company_web_domains WHERE name = :web_domain), :author)", $values)
+            ->affectedRows();
+
+        //$data = $db->query("INSERT INTO website_news (title, description, internal)");
+        return (bool) $result;
     }
 
 }

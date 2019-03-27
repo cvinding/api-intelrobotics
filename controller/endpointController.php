@@ -91,7 +91,7 @@ class EndpointController extends Controller implements \CONTROLLER\_IMPLEMENTS\C
                 // Check if a token is needed for the endpoint
                 if($settings["TOKEN"]) {
                     $token = $this->checkToken($headers);
-
+                    $controller->setToken($token);
                 }
 
                 // Check if a token is needed AND permissions is not set to false

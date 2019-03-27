@@ -182,10 +182,40 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         }
     }
 
+    /**
+     * createNews() is used for creating news
+     * @param string $title
+     * @param string $description
+     * @param int $internal
+     * @param string $webDomain
+     */
     public function createNews(string $title, string $description, int $internal, string $webDomain) {
-        //TODO: this function
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
+            /**
+             * @var \MODEL\AuthModel $auth
+             */
+            $auth = $this->getModel("AuthModel");
 
+            // Get the username from the token
+            $author = $auth->getTokenClaim($this->getToken(), "uid");
 
+            // Create the news post
+            $result = $info->createNews($title, $description, $internal, $webDomain, $author);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to create news post");
+            }
+
+            exit(json_encode(["message" => "Success! A news post was created", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to create news post");
+        }
     }
 
     public function createProduct(string $title, string $description, string $webDomain) {
