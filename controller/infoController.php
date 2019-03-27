@@ -218,8 +218,39 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         }
     }
 
+    /**
+     * createProduct() is an endpoint used for creating products
+     * @param string $title
+     * @param string $description
+     * @param string $webDomain
+     */
     public function createProduct(string $title, string $description, string $webDomain) {
-        //TODO: this function
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
+            /**
+             * @var \MODEL\AuthModel $auth
+             */
+            $auth = $this->getModel("AuthModel");
+
+            // Get the username from the token
+            $author = $auth->getTokenClaim($this->getToken(), "uid");
+
+            // Create the news post
+            $result = $info->createProduct($title, $description, $webDomain, $author);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to create a new product");
+            }
+
+            exit(json_encode(["message" => "Success! A new product was created", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to a new product");
+        }
     }
 
     public function deleteNews(int $id) {

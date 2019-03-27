@@ -65,6 +65,15 @@ class InfoModel extends Model {
         return $data;
     }
 
+    /**
+     * createNews() is used for creating news
+     * @param string $title
+     * @param string $description
+     * @param int $internal
+     * @param string $webDomain
+     * @param string $author
+     * @return bool
+     */
     public function createNews(string $title, string $description, int $internal, string $webDomain, string $author) : bool {
         $db = new \DATABASE\Database();
 
@@ -73,7 +82,25 @@ class InfoModel extends Model {
         $result = $db->query("INSERT INTO website_news (title, description, internal, web_domain, author) VALUES (:title, :description, :internal, (SELECT id FROM company_web_domains WHERE name = :web_domain), :author)", $values)
             ->affectedRows();
 
-        //$data = $db->query("INSERT INTO website_news (title, description, internal)");
+        return (bool) $result;
+    }
+
+    /**
+     * createProduct() is used for creating products
+     * @param string $title
+     * @param string $description
+     * @param string $webDomain
+     * @param string $author
+     * @return bool
+     */
+    public function createProduct(string $title, string $description, string $webDomain, string $author) {
+        $db = new \DATABASE\Database();
+
+        $values = ["title" => $title, "description" => $description, "web_domain" => $webDomain, "author" => $author];
+
+        $result = $db->query("INSERT INTO website_products (title, description, web_domain, author) VALUES (:title, :description, (SELECT id FROM company_web_domains WHERE name = :web_domain), :author)", $values)
+            ->affectedRows();
+
         return (bool) $result;
     }
 
