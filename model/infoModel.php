@@ -59,7 +59,7 @@ class InfoModel extends Model {
     public function getProducts(string $webDomain) : array {
         $db = new \DATABASE\Database();
 
-        $data = $db->query("SELECT product.title, product.description, product.author, product.updated FROM website_products product WHERE (SELECT id FROM company_web_domains web WHERE web.name = :web_domain) = product.web_domain", ["web_domain" => $webDomain])
+        $data = $db->query("SELECT id, product.title, product.description, product.author, product.updated FROM website_products product WHERE (SELECT id FROM company_web_domains web WHERE web.name = :web_domain) = product.web_domain", ["web_domain" => $webDomain])
             ->fetchArray();
 
         return $data;
@@ -99,6 +99,34 @@ class InfoModel extends Model {
         $values = ["title" => $title, "description" => $description, "web_domain" => $webDomain, "author" => $author];
 
         $result = $db->query("INSERT INTO website_products (title, description, web_domain, author) VALUES (:title, :description, (SELECT id FROM company_web_domains WHERE name = :web_domain), :author)", $values)
+            ->affectedRows();
+
+        return (bool) $result;
+    }
+
+    /**
+     * deleteNews() is used for deleting a news entry from the database
+     * @param int $id
+     * @return bool
+     */
+    public function deleteNews(int $id) {
+        $db = new \DATABASE\Database();
+
+        $result = $db->query("DELETE FROM website_news WHERE id = :id", ["id" => $id])
+            ->affectedRows();
+
+        return (bool) $result;
+    }
+
+    /**
+     * deleteProduct() is used for deleting a product entry from the database
+     * @param int $id
+     * @return bool
+     */
+    public function deleteProduct(int $id) {
+        $db = new \DATABASE\Database();
+
+        $result = $db->query("DELETE FROM website_products WHERE id = :id", ["id" => $id])
             ->affectedRows();
 
         return (bool) $result;

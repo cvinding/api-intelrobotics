@@ -253,13 +253,56 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         }
     }
 
+    /**
+     * deleteNews() is an endpoint deleting news
+     * @param int $id
+     */
     public function deleteNews(int $id) {
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
 
+            // Create the news post
+            $result = $info->deleteNews($id);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to delete news post");
+            }
+
+            exit(json_encode(["message" => "Success! News post was deleted", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to delete news post");
+        }
     }
 
+    /**
+     * deleteProduct() is an endpoint for deleting products
+     * @param int $id
+     */
     public function deleteProduct(int $id) {
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
 
+            // Create the news post
+            $result = $info->deleteProduct($id);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to delete product");
+            }
+
+            exit(json_encode(["message" => "Success! Product was deleted", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to delete product");
+        }
     }
-
 
 }
