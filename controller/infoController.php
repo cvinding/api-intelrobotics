@@ -86,7 +86,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["news" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get external news list");
         }
     }
 
@@ -109,7 +109,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["news" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get internal news list");
         }
     }
 
@@ -134,7 +134,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["news" => $output, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get news list");
         }
     }
 
@@ -158,7 +158,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["about" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get about information");
         }
     }
 
@@ -178,7 +178,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["products" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get product list");
         }
     }
 
