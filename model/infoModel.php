@@ -59,14 +59,77 @@ class InfoModel extends Model {
     public function getProducts(string $webDomain) : array {
         $db = new \DATABASE\Database();
 
-        $data = $db->query("SELECT product.title, product.description, product.author, product.updated FROM website_products product WHERE (SELECT id FROM company_web_domains web WHERE web.name = :web_domain) = product.web_domain", ["web_domain" => $webDomain])
+        $data = $db->query("SELECT id, product.title, product.description, product.author, product.updated FROM website_products product WHERE (SELECT id FROM company_web_domains web WHERE web.name = :web_domain) = product.web_domain", ["web_domain" => $webDomain])
             ->fetchArray();
 
         return $data;
     }
 
-    public function createNews(string $title, string $description, int $internal, string $webDomain) {
+    /**
+     * createNews() is used for creating news
+     * @param string $title
+     * @param string $description
+     * @param int $internal
+     * @param string $webDomain
+     * @param string $author
+     * @return bool
+     */
+    public function createNews(string $title, string $description, int $internal, string $webDomain, string $author) : bool {
+        $db = new \DATABASE\Database();
 
+        $values = ["title" => $title, "description" => $description, "internal" => $internal, "web_domain" => $webDomain, "author" => $author];
+
+        $result = $db->query("INSERT INTO website_news (title, description, internal, web_domain, author) VALUES (:title, :description, :internal, (SELECT id FROM company_web_domains WHERE name = :web_domain), :author)", $values)
+            ->affectedRows();
+
+        return (bool) $result;
+    }
+
+    /**
+     * createProduct() is used for creating products
+     * @param string $title
+     * @param string $description
+     * @param string $webDomain
+     * @param string $author
+     * @return bool
+     */
+    public function createProduct(string $title, string $description, string $webDomain, string $author) {
+        $db = new \DATABASE\Database();
+
+        $values = ["title" => $title, "description" => $description, "web_domain" => $webDomain, "author" => $author];
+
+        $result = $db->query("INSERT INTO website_products (title, description, web_domain, author) VALUES (:title, :description, (SELECT id FROM company_web_domains WHERE name = :web_domain), :author)", $values)
+            ->affectedRows();
+
+        return (bool) $result;
+    }
+
+    /**
+     * deleteNews() is used for deleting a news entry from the database
+     * @param int $id
+     * @return bool
+     */
+    public function deleteNews(int $id) {
+        $db = new \DATABASE\Database();
+
+        $result = $db->query("DELETE FROM website_news WHERE id = :id", ["id" => $id])
+            ->affectedRows();
+
+        return (bool) $result;
+    }
+
+    /**
+     * deleteProduct() is used for deleting a product entry from the database
+     * @param int $id
+     * @return bool
+     */
+    public function deleteProduct(int $id) {
+        $db = new \DATABASE\Database();
+
+        $result = $db->query("DELETE FROM website_products WHERE id = :id", ["id" => $id])
+            ->affectedRows();
+
+        return (bool) $result;
     }
 
 }

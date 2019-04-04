@@ -2,10 +2,10 @@
 -- version 4.8.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Mar 21, 2019 at 01:19 PM
--- Server version: 10.3.12-MariaDB
--- PHP Version: 7.2.14
+-- Vært: 127.0.0.1:3307
+-- Genereringstid: 27. 03 2019 kl. 11:14:41
+-- Serverversion: 10.3.12-MariaDB
+-- PHP-version: 7.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -25,68 +25,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `company_financials`
---
-
-DROP TABLE IF EXISTS `company_financials`;
-CREATE TABLE IF NOT EXISTS `company_financials` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `upload_path` varchar(255) NOT NULL,
-  `author` varchar(255) NOT NULL,
-  `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `company_groups`
---
-
-DROP TABLE IF EXISTS `company_groups`;
-CREATE TABLE IF NOT EXISTS `company_groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `company_groups`
---
-
-INSERT INTO `company_groups` (`id`, `name`) VALUES
-(1, 'HR'),
-(2, 'Webmaster');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `company_group_permissions`
---
-
-DROP TABLE IF EXISTS `company_group_permissions`;
-CREATE TABLE IF NOT EXISTS `company_group_permissions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
-  `endpoint_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `group_id` (`group_id`),
-  KEY `endpoint_id` (`endpoint_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `company_group_permissions`
---
-
-INSERT INTO `company_group_permissions` (`id`, `group_id`, `endpoint_id`) VALUES
-(1, 1, 1),
-(2, 2, 3);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `company_web_domains`
+-- Struktur-dump for tabellen `company_web_domains`
 --
 
 DROP TABLE IF EXISTS `company_web_domains`;
@@ -97,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `company_web_domains` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `company_web_domains`
+-- Data dump for tabellen `company_web_domains`
 --
 
 INSERT INTO `company_web_domains` (`id`, `name`) VALUES
@@ -108,29 +47,7 @@ INSERT INTO `company_web_domains` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `restricted_endpoints`
---
-
-DROP TABLE IF EXISTS `restricted_endpoints`;
-CREATE TABLE IF NOT EXISTS `restricted_endpoints` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `restricted_endpoints`
---
-
-INSERT INTO `restricted_endpoints` (`id`, `name`) VALUES
-(1, 'USER'),
-(2, 'FINANCIAL'),
-(3, 'INFO');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `website_about`
+-- Struktur-dump for tabellen `website_about`
 --
 
 DROP TABLE IF EXISTS `website_about`;
@@ -145,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `website_about` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `website_about`
+-- Data dump for tabellen `website_about`
 --
 
 INSERT INTO `website_about` (`id`, `description`, `web_domain`, `author`, `updated`) VALUES
@@ -155,7 +72,7 @@ INSERT INTO `website_about` (`id`, `description`, `web_domain`, `author`, `updat
 -- --------------------------------------------------------
 
 --
--- Table structure for table `website_news`
+-- Struktur-dump for tabellen `website_news`
 --
 
 DROP TABLE IF EXISTS `website_news`;
@@ -169,10 +86,10 @@ CREATE TABLE IF NOT EXISTS `website_news` (
   `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `web_domain` (`web_domain`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `website_news`
+-- Data dump for tabellen `website_news`
 --
 
 INSERT INTO `website_news` (`id`, `title`, `description`, `internal`, `web_domain`, `author`, `updated`) VALUES
@@ -180,12 +97,16 @@ INSERT INTO `website_news` (`id`, `title`, `description`, `internal`, `web_domai
 (2, 'Test2', 'akdokaodkadkk', 0, 1, 'chvr', '2019-03-20 11:26:52'),
 (3, 'Mån', 'okokjiuijkoqqdqdqdwqwqetkko', 0, 1, 'chvr', '2019-03-21 09:04:17'),
 (4, 'Kage Tirsdag', 'I ledelsen er vi kommet frem til vi skal prioritere medarbejderne mere og har derfor indført kage tirsdag. Håber i kan lide de fremtidige kager.', 0, 1, 'chvr', '2019-03-21 09:04:46'),
-(5, 'Ny chef i HR-afdeling', 'Som i nok i allerede har hørt er der blevet ansat en ny chef i HR. Byd velkommmen til Michael, han kommer fordi og hilser på jer.', 0, 1, 'chvr', '2019-03-21 09:04:50');
+(5, 'Ny chef i HR-afdeling', 'Som i nok i allerede har hørt er der blevet ansat en ny chef i HR. Byd velkommmen til Michael, han kommer fordi og hilser på jer.', 0, 1, 'chvr', '2019-03-21 09:04:50'),
+(6, 'Test', 'JEg sidder lige og tester', 1, 1, 'chvr', '2019-03-27 09:21:51'),
+(7, 'Nyhed', 'test ', 1, 1, 'chvr', '2019-03-27 09:29:59'),
+(8, 'asda', 'sdada', 0, 1, 'testased', '2019-03-27 10:38:33'),
+(9, 'teSASDASDA', 'asdasd', 1, 1, 'testased', '2019-03-27 10:47:50');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `website_products`
+-- Struktur-dump for tabellen `website_products`
 --
 
 DROP TABLE IF EXISTS `website_products`;
@@ -201,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `website_products` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `website_products`
+-- Data dump for tabellen `website_products`
 --
 
 INSERT INTO `website_products` (`id`, `title`, `description`, `web_domain`, `author`, `updated`) VALUES
@@ -219,30 +140,23 @@ INSERT INTO `website_products` (`id`, `title`, `description`, `web_domain`, `aut
 (12, 'Robotten 20000', 'Robotten der kan selv', 1, 'chvr', '2019-03-21 12:51:20');
 
 --
--- Constraints for dumped tables
+-- Begrænsninger for dumpede tabeller
 --
 
 --
--- Constraints for table `company_group_permissions`
---
-ALTER TABLE `company_group_permissions`
-  ADD CONSTRAINT `company_group_id_company_group_permissions_group_id` FOREIGN KEY (`group_id`) REFERENCES `company_groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `restricted_endpoints_id_company_group_permissions_endpoint_id` FOREIGN KEY (`endpoint_id`) REFERENCES `restricted_endpoints` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
---
--- Constraints for table `website_about`
+-- Begrænsninger for tabel `website_about`
 --
 ALTER TABLE `website_about`
   ADD CONSTRAINT `company_web_domains_website_about_web_domain` FOREIGN KEY (`web_domain`) REFERENCES `company_web_domains` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Constraints for table `website_news`
+-- Begrænsninger for tabel `website_news`
 --
 ALTER TABLE `website_news`
   ADD CONSTRAINT `company_web_domains_website_news_web_domain` FOREIGN KEY (`web_domain`) REFERENCES `company_web_domains` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Constraints for table `website_products`
+-- Begrænsninger for tabel `website_products`
 --
 ALTER TABLE `website_products`
   ADD CONSTRAINT `company_web_domains_website_products_web_domain` FOREIGN KEY (`web_domain`) REFERENCES `company_web_domains` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

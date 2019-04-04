@@ -243,6 +243,22 @@ class Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
     }
 
     /**
+     * setToken() is used to set the currently used token if there are any token used
+     * @param string $token
+     */
+    protected function setToken(string $token) {
+        $this->token = $token;
+    }
+
+    /**
+     * getToken() returns the used token if there are any tokens used
+     * @return string
+     */
+    protected function getToken() : string {
+        return $this->token;
+    }
+
+    /**
      * A standard function for seeing which controller you're working with
      * @return string
      */

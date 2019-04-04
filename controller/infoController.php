@@ -86,7 +86,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["news" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get external news list");
         }
     }
 
@@ -109,7 +109,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["news" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get internal news list");
         }
     }
 
@@ -134,7 +134,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["news" => $output, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get news list");
         }
     }
 
@@ -158,7 +158,7 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["about" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get about information");
         }
     }
 
@@ -178,27 +178,131 @@ class InfoController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
             exit(json_encode(["products" => $result, "status" => true]));
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to get product list");
         }
     }
 
+    /**
+     * createNews() is used for creating news
+     * @param string $title
+     * @param string $description
+     * @param int $internal
+     * @param string $webDomain
+     */
     public function createNews(string $title, string $description, int $internal, string $webDomain) {
-        //TODO: this function
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
+            /**
+             * @var \MODEL\AuthModel $auth
+             */
+            $auth = $this->getModel("AuthModel");
 
+            // Get the username from the token
+            $author = $auth->getTokenClaim($this->getToken(), "uid");
 
+            // Create the news post
+            $result = $info->createNews($title, $description, $internal, $webDomain, $author);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to create news post");
+            }
+
+            exit(json_encode(["message" => "Success! A news post was created", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to create news post");
+        }
     }
 
+    /**
+     * createProduct() is an endpoint used for creating products
+     * @param string $title
+     * @param string $description
+     * @param string $webDomain
+     */
     public function createProduct(string $title, string $description, string $webDomain) {
-        //TODO: this function
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
+            /**
+             * @var \MODEL\AuthModel $auth
+             */
+            $auth = $this->getModel("AuthModel");
+
+            // Get the username from the token
+            $author = $auth->getTokenClaim($this->getToken(), "uid");
+
+            // Create the news post
+            $result = $info->createProduct($title, $description, $webDomain, $author);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to create a new product");
+            }
+
+            exit(json_encode(["message" => "Success! A new product was created", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to a new product");
+        }
     }
 
+    /**
+     * deleteNews() is an endpoint deleting news
+     * @param int $id
+     */
     public function deleteNews(int $id) {
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
 
+            // Create the news post
+            $result = $info->deleteNews($id);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to delete news post");
+            }
+
+            exit(json_encode(["message" => "Success! News post was deleted", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to delete news post");
+        }
     }
 
+    /**
+     * deleteProduct() is an endpoint for deleting products
+     * @param int $id
+     */
     public function deleteProduct(int $id) {
+        try {
+            /**
+             * @var \MODEL\InfoModel $info
+             */
+            $info = $this->getModel("InfoModel");
 
+            // Create the news post
+            $result = $info->deleteProduct($id);
+
+            // If failure
+            if(!$result) {
+                $this->exitResponse(500, "Unable to delete product");
+            }
+
+            exit(json_encode(["message" => "Success! Product was deleted", "status" => true]));
+
+        } catch (\Exception $exception) {
+            $this->exitResponse(500, "Something unexpected occurred, unable to delete product");
+        }
     }
-
 
 }
