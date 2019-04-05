@@ -96,7 +96,7 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
                     }
                 }
 
-                $temp = ["fullname" => $entries[$u]["displayname"][0]];
+                $temp = ["fullname" => $entries[$u]["displayname"][0], "social_security_number" => "020280-8905"];
 
                 $temp = array_merge($temp, $displayGroups);
 
