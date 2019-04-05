@@ -6,10 +6,6 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
     public function __construct() {
         parent::__construct([
-            "searchPhoneBook" => [
-                "REQUEST_METHOD_LEVEL" => 1,
-                "TOKEN" => true
-            ],
             "searchUserList" => [
                 "REQUEST_METHOD_LEVEL" => 1,
                 "TOKEN" => true,
@@ -20,18 +16,12 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
         ]);
     }
 
-
-    public function searchPhoneBook(string $searchInput) {
-        //TODO: used by everyone to search for user + other work related info
-    }
-
     public function searchUserList(string $searchInput) {
-        //TODO: used by HR to search for user + CPR number
 
+        $config = require "../config/ldap.php";
 
-        /*
-        $username = "API_LDAP_SEARCHER";
-        $password = "IntelRobotics!";
+        $username = $config["LDAP_USERNAME"];
+        $password = $config["LDAP_PASSWORD"];
 
         $hostname = "ldap://ad.intelrobotics.dk";
 
@@ -50,26 +40,72 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
         $ldapBind = ldap_bind($ldapConn, $ldapRDN, $password);
 
+        $output = [];
+
         if($ldapBind) {
 
             $ldapBaseDN = "OU=IntelRobotics,DC=ad,DC=intelrobotics,DC=dk";
-            $search = "(&(objectCategory=person))";
+            $search = "(&(objectCategory=person)(cn=*{$searchInput}*))";
             $result = ldap_search($ldapConn, $ldapBaseDN, $search);
 
             $entries = ldap_get_entries($ldapConn, $result);
 
-            //var_dump($entries);
+            $bannedGroups = ["DK_","JP_","CA_","IntelRobotics_"];
 
-            //TODO: check other memberof entries for ServiceUser_SG
-            foreach($entries as $entry) {
-                if(strpos($entry["givenname"][0], "Template") === false && strpos($entry["memberof"][0], "ServiceUser_SG") === false) {
-                  var_dump($entry);
+            for($u = 0; $u < $entries["count"]; $u++) {
+
+                $fakeUser = false;
+
+                for($i = 0; $i < $entries[$u]["memberof"]["count"]; $i++ ) {
+                    if(strpos($entries[$u]["memberof"][$i], "ServiceUser_SG") !== false) {
+                        $fakeUser = true;
+                        break;
+                    }
                 }
+
+                for($i = 0; $i < $entries[$u]["givenname"]["count"]; $i++ ) {
+                    if(strpos($entries[$u]["givenname"][$i], "Template") !== false) {
+                        $fakeUser = true;
+                        break;
+                    }
+                }
+
+                if($fakeUser) {
+                    continue;
+                }
+
+                $displayGroups = [];
+
+                for($i = 0; $i < $entries[$u]["memberof"]["count"]; $i++ ) {
+                    $cn = explode("=",explode(",", $entries[$u]["memberof"][$i])[0])[1];
+
+                    $dontAdd = false;
+
+                    foreach($bannedGroups as $group) {
+                        if(strpos($cn, $group) !== false) {
+                            $dontAdd = true;
+                        }
+                    }
+
+                    if(!$dontAdd) {
+                        if($cn === "Denmark_SG" || $cn === "Canada_SG" || $cn === "Japan_SG") {
+                            $displayGroups["country"] = str_replace("_SG", "", $cn);
+                        }else {
+                            $displayGroups["department"] = str_replace("_SG", "", $cn);
+                        }
+                    }
+                }
+
+                $temp = ["fullname" => $entries[$u]["displayname"][0]];
+
+                $temp = array_merge($temp, $displayGroups);
+
+                $output[] = $temp;
+
             }
         }
 
-        */
-        exit(json_encode(["result" => $searchInput, "status" => true]));
+        exit(json_encode(["search_result" => $output, "status" => true]));
     }
 
 
