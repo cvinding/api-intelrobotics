@@ -19,7 +19,7 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
     public function searchUserList(string $searchInput) {
 
 //TODO: move this code to a model
-        exit(json_encode(["search_result" => ["fullname" => "Tobias Larsen", "social_security_number" => "0909679999", "country" => "Denmark", "department" => "IT"], "status" => true]));
+        exit(json_encode(["search_result" => [["fullname" => "Tobias Larsen", "social_security_number" => "0909679999", "country" => "Denmark", "department" => "IT"]], "status" => true]));
 
         $config = require "../config/ldap.php";
 
