@@ -1,7 +1,11 @@
 <?php
 namespace CONTROLLER;
 
-
+/**
+ * Class UserController
+ * @package CONTROLLER
+ * @author Christian Vinding Rasmussen
+ */
 class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Controller {
 
     public function __construct() {
@@ -33,7 +37,7 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
 
         } catch (\Exception $exception) {
-            exit($exception);
+            $this->exitResponse(500, "Something unexpected occurred, unable to search user list");
         }
 
     }

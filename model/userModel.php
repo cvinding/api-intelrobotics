@@ -2,9 +2,18 @@
 
 namespace MODEL;
 
-
+/**
+ * Class UserModel
+ * @package MODEL
+ * @author Christian Vinding Rasmussen
+ */
 class UserModel {
 
+    /**
+     * getLDAPUserInfo() is a method for searching in our domain users
+     * @param string $searchInput
+     * @return array
+     */
     public function getLDAPUserInfo(string $searchInput) : array {
         $config = require "../config/ldap.php";
 
