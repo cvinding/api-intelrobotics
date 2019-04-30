@@ -7,7 +7,7 @@ namespace MODEL;
  * @package MODEL
  * @author Christian Vinding Rasmussen
  */
-class UserModel {
+class UserModel extends Model {
 
     /**
      * getLDAPUserInfo() is a method for searching in our domain users
@@ -101,6 +101,8 @@ class UserModel {
 
             }
         }
+	
+	return $output;
     }
 
 }

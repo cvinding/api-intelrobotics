@@ -22,7 +22,7 @@ class UserController extends Controller implements \CONTROLLER\_IMPLEMENTS\Contr
 
     public function searchUserList(string $searchInput) {
 
-        exit(json_encode(["search_result" => [["fullname" => "Tobias Larsen", "social_security_number" => "0909679999", "country" => "Denmark", "department" => "IT"]], "status" => true]));
+       // exit(json_encode(["search_result" => [["fullname" => "Tobias Larsen", "social_security_number" => "0909679999", "country" => "Denmark", "department" => "IT"]], "status" => true]));
 
         try {
             /**
